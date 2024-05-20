@@ -6,7 +6,7 @@
 
   <div class="navbar">
     <a href="#">Главная</a>
-    <router-link to="/doctors" >Врачи</router-link>
+    <router-link to="/doctors">Врачи</router-link>
 
     <a href="#">Услуги и цены</a>
     <a href="#">О клинике</a>

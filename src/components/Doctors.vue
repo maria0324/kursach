@@ -4,7 +4,7 @@
 
 <template>
 <header>
-  <img class="logo" src="../public/img/logo.png" alt="logo">
+
   <div class="logo-text">
     <p>BestF</p>
   </div>
