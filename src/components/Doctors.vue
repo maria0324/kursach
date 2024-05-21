@@ -1,11 +1,21 @@
 <template>
   <body>
-  <div class="lol">ТЕКСТ ДАААААААА, Я ЛЮБЛЮ ВЁРСТКУ, КОГДА УЖЕ СВАДЬБА?</div>
+  <header>
+
+  </header>
+
   </body>
 </template>
 
-<style scoped>
+
+<style >
+header{
+
+}
 
 </style>
+
+
+
 <script setup lang="ts">
 </script>

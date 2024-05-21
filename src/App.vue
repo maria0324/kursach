@@ -8,9 +8,9 @@
       <div class="navbar">
         <router-link to="/">Главная</router-link>
         <router-link to="/doctors">Врачи</router-link>
-        <router-link to="#">Услуги и цены</router-link>
-        <router-link to="#">О клинике</router-link>
-        <router-link to="#">Контакты</router-link>
+        <router-link to="/services">Услуги и цены</router-link>
+        <router-link to="/about">О клинике</router-link>
+        <router-link to="/contacts">Контакты</router-link>
         <router-link to="#">Вход</router-link>
       </div>
     </header>
@@ -49,7 +49,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 
 *{
   margin: 0;
