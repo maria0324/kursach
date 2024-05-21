@@ -1,53 +1,65 @@
 <template>
   <div>
-    <header>
-      <img class="logo" src="../public/img/logo.png" alt="logo">
-      <div class="logo-text">
-        <p>BestF</p>
-      </div>
-      <div class="navbar">
-        <router-link to="/">Главная</router-link>
-        <router-link to="/doctors">Врачи</router-link>
-        <router-link to="#">Услуги и цены</router-link>
-        <router-link to="#">О клинике</router-link>
-        <router-link to="#">Контакты</router-link>
-        <router-link to="#">Вход</router-link>
-      </div>
-    </header>
 
-    <router-view/>
-
-    <footer>
-      <div class="footer-navbar">
-        <div class="footer-column">
-          <router-link to="/">Главная</router-link>
-          <router-link to="#">О клинике</router-link>
-          <router-link to="/doctors">Врачи</router-link>
-        </div>
-        <div class="footer-column">
-          <router-link to="#">Контакты</router-link>
-          <router-link to="#">Услуги и цены</router-link>
-          <router-link to="#">Вход</router-link>
+    <div class="navbar">
+      <a href="#">Главная</a>
+      <router-link to="/doctors">Врачи</router-link>
+      <a href="#">Услуги и цены</a>
+      <a href="#">О клинике</a>
+      <a href="#">Контакты</a>
+      <a href="#">Вход</a>
+    </div>
+    <div class="main-text">
+      <p>Ветеринарный <br> центр BestF</p>
+    </div>
+    <div class="cel-text">
+      <p>Наша цель: обеспечить <br> индивидуальный подход к каждому <br> пациенту, став гарантом долгой, <br> здоровой и счастливой жизни Вашего <br> питомца.</p>
+    </div>
+    <div class="button-note">
+      <button>Записаться на прием</button>
+    </div>
+    <img class="start-dog" src="../../public/img/start-dog.png" alt="dog">
+    <section class="who-services">
+      <div class="wrapper">
+        <h3 class="who-services-text">Предоставляем услуги:</h3>
+        <div class="grid_icons d-f j-c-c">
+          <div class="column1grid d-f f-d-r">
+            <figure>
+              <img class alt="dog" src="../../public/img/dog.png"/>
+              <figcaption class="d-f j-c-c">СОБАКАМ</figcaption>
+            </figure>
+            <figure>
+              <img class alt="turtle" src="../../public/img/turtle.png"/>
+              <figcaption class="d-f j-c-c">РЕПТИЛИЯМИ</figcaption>
+            </figure>
+            <figure>
+              <img class alt="cow" src="../../public/img/cow.png"/>
+              <figcaption class="d-f j-c-c">КРС</figcaption>
+            </figure>
+          </div>
+          <div class="column2grid d-f f-d-r">
+            <figure>
+              <img class alt="cat" src="../../public/img/cat.png"/>
+              <figcaption class="d-f j-c-c">КОШКАМ</figcaption>
+            </figure>
+            <figure>
+              <img class alt="bird" src="../../public/img/bird.png"/>
+              <figcaption class="d-f j-c-c">ПТИЦАМ</figcaption>
+            </figure>
+            <figure>
+              <img class alt="fish" src="../../public/img/fish.png"/>
+              <figcaption class="d-f j-c-c">РЫБАМ</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
-      <div class="footer-contact">
-        <div class="contact-item">
-          <img src="../public/img/location.svg" alt="Location Icon">
-          <p>г. Томск, ул.Герцена 18</p>
-        </div>
-        <div class="contact-item">
-          <img src="../public/img/mail.png" alt="Email Icon">
-          <p>bestf@mail.ru</p>
-        </div>
-        <div class="contact-item">
-          <img src="../public/img/phone.png" alt="Phone Icon">
-          <p>+89 51 152 3212</p>
-        </div>
-      </div>
-      <img class="footer-puppy" alt="puppy" src="../public/img/footer-puppy.png">
-    </footer>
+    </section>
   </div>
 </template>
+
+<script>
+
+</script>
 
 <style>
 
@@ -57,7 +69,7 @@
 }
 
 body{
-  background-image: url("../public/img/start-screen-gradient-background.png");
+  background-image: url("../../public/img/start-screen-gradient-background.png");
   background-repeat: no-repeat;
   background-size: cover;
   font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -191,7 +203,7 @@ body{
 footer{
   height: 300px;
   width: 100%;
-  background-image: url("../public/img/start-screen-gradient-background.png");
+  background-image: url("../../public/img/start-screen-gradient-background.png");
   background-repeat: no-repeat;
   background-size: cover;
   position: absolute;
@@ -245,3 +257,5 @@ footer{
   right: 100px;
 }
 </style>
+
+
