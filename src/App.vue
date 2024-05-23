@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header>
+    <header :class="headerClass">
       <img class="logo" src="../public/img/logo.png" alt="logo">
       <div class="logo-text">
         <p>BestF</p>
@@ -11,7 +11,7 @@
         <router-link to="/services">Услуги и цены</router-link>
         <router-link to="/about">О клинике</router-link>
         <router-link to="/contacts">Контакты</router-link>
-        <router-link to="#">Вход</router-link>
+        <router-link to="/login">Вход</router-link>
       </div>
     </header>
 
@@ -49,33 +49,83 @@
   </div>
 </template>
 
-<style scoped>
+<script>
+export default {
+  computed: {
+    headerClass() {
+      const route = this.$route.path;
+      if (route === '/') {
+        return 'header-home';
+      } else {
+        return 'header-other';
+      }
+    }
+  },
+  watch: {
+    '$route'(to) {
+      this.updateBodyClass(to.path);
+    }
+  },
+  mounted() {
+    this.updateBodyClass(this.$route.path);
+  },
+  methods: {
+    updateBodyClass(path) {
+      if (path === '/') {
+        document.body.className = 'home-background';
+      } else {
+        document.body.className = 'default-background';
+      }
+    }
+  }
+}
+</script>
 
-*{
+<style>
+body.home-background {
+  background-image: url("../public/img/start-screen-gradient-background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+body.default-background {
+  background-image: none;
+}
+
+* {
   margin: 0;
   padding: 0;
 }
 
-body{
-  background-image: url("../public/img/start-screen-gradient-background.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+body {
   font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.logo{
+.header-home {
+  background-image: url("../public/img/start-screen-gradient-background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+.header-other {
+    background-image: url("../public/img/header-screen.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 140px;
+}
+
+
+.logo {
   position: relative;
   top: 25px;
   left: 100px;
 }
 
-.start-dog{
-  position: absolute;
-  top: 171px;
-  height: 905px;
-  width: 900px;
-  left: 658px;
-}
+
 
 .navbar {
   position: absolute;
@@ -95,10 +145,10 @@ body{
 }
 
 .navbar a:not(:first-child) {
-  margin-left:75px;
+  margin-left: 75px;
 }
 
-.logo-text p{
+.logo-text p {
   color: white;
   height: 30px;
   width: 60px;
@@ -108,23 +158,9 @@ body{
   left: 173px;
 }
 
-.main-text {
-  color: white;
-  font-size: 64px;
-  position: absolute;
-  top: 230px;
-  left: 95px;
-}
 
-.cel-text{
-  color: white;
-  font-size: 32px;
-  position: absolute;
-  top: 455px;
-  left: 100px;
-}
 
-.button-note button{
+.button-note button {
   height: 40px;
   width: 330px;
   background-color: white;
@@ -133,62 +169,19 @@ body{
   border: white;
 }
 
-.button-note {
-  position: absolute;
-  top: 730px;
-  left: 100px;
-}
 
-.who-services{
-  background-color: white;
-  height: 855px;
-  width: 100%;
-  position: absolute;
-  top: 1075px;
-}
 
-.who-services-text{
-  font-size: 48px;
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-
-}
-
-.wrapper {
-  margin: 0 auto;
-  max-width: 1440px;
-}
-
-.d-f {
-  display: flex;
-}
-
-.f-d-r {
-  flex-direction: row;
-}
-
-.j-c-c {
-  justify-content: center;
-}
-
-.grid_icons {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  gap: 35px;
-  position: relative;
-  top: 165px;
-}
 .column1grid figure:not(:last-child),
 .column2grid figure:not(:last-child) {
-  margin-right: 95px;}
-.wrapper figcaption{
+  margin-right: 95px;
+}
+
+.wrapper figcaption {
   font-size: 20px;
   font-weight: bold;
 }
-footer{
+
+footer {
   height: 300px;
   width: 100%;
   background-image: url("../public/img/start-screen-gradient-background.png");
@@ -197,6 +190,7 @@ footer{
   position: absolute;
   top: 1860px;
 }
+
 .footer-navbar {
   position: absolute;
   top: 75px;
@@ -206,30 +200,32 @@ footer{
   justify-content: space-between;
   width: 60%;
 }
-.footer-navbar a{
+
+.footer-navbar a {
   text-decoration: none;
   padding-top: 15px;
-
   font-size: 20px;
   color: white;
   text-align: left;
 }
+
 .footer-column {
   display: flex;
   flex-direction: column;
   width: 50%;
 }
+
 .footer-column:not(:first-child) {
   padding-right: 400px;
 }
 
-.footer-contact{
+.footer-contact {
   position: absolute;
   top: 50px;
   left: 1160px;
 }
 
-.footer-contact p{
+.footer-contact p {
   font-size: 20px;
   color: #D9B8A1;
 }
@@ -237,9 +233,10 @@ footer{
 .contact-item {
   display: flex;
   align-items: center;
-  padding-top: 25px
+  padding-top: 25px;
 }
-.footer-puppy{
+
+.footer-puppy {
   position: absolute;
   top: 23px;
   right: 100px;
