@@ -17,8 +17,25 @@
 
 <script setup>
 import { ref } from 'vue';
-import initialData from '../../initialData.json';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref as dbRef, set } from "firebase/database";
 
+// Firebase конфигурация
+const firebaseConfig = {
+  apiKey: "AIzaSyCvmC0Udk4D3jOqqmRdV5Alp7Rq0rvFSjo",
+  authDomain: "vetclinic-6a468.firebaseapp.com",
+  databaseURL: "https://vetclinic-6a468-default-rtdb.firebaseio.com",
+  projectId: "vetclinic-6a468",
+  storageBucket: "vetclinic-6a468.appspot.com",
+  messagingSenderId: "1080872217369",
+  appId: "1:1080872217369:web:bba4407269cffd65dc3388"
+};
+
+// Инициализация Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Декларация переменных для привязки к форме
 const login = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -28,6 +45,7 @@ const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
 
+// Функция регистрации пользователя
 const registerUser = () => {
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Пароли не совпадают';
@@ -44,17 +62,24 @@ const registerUser = () => {
     phoneNumber: phone.value,
   };
 
-  initialData.Users[`user${newUser.id}`] = newUser;
-
-  // Очистка формы после регистрации
-  login.value = '';
-  password.value = '';
-  confirmPassword.value = '';
-  firstName.value = '';
-  lastName.value = '';
-  patronymic.value = '';
-  phone.value = '';
-  errorMessage.value = '';
+  const userRef = dbRef(db, 'Users/' + newUser.id);
+  set(userRef, newUser)
+      .then(() => {
+        // Очистка формы после регистрации
+        login.value = '';
+        password.value = '';
+        confirmPassword.value = '';
+        firstName.value = '';
+        lastName.value = '';
+        patronymic.value = '';
+        phone.value = '';
+        errorMessage.value = '';
+        alert('Пользователь зарегистрирован успешно!');
+      })
+      .catch((error) => {
+        console.error('Ошибка при регистрации пользователя: ', error);
+        errorMessage.value = 'Ошибка при регистрации пользователя!';
+      });
 };
 </script>
 

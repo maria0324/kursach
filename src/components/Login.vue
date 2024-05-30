@@ -14,23 +14,46 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import initialData from '../../initialData.json';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref as dbRef, get, child } from "firebase/database";
+
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+
+if (!firebaseConfig.apiKey) {
+  console.error('Firebase configuration is missing or invalid');
+}
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
-const loginUser = () => {
-  const user = Object.values(initialData.Users).find(
-      user => user.login === username.value && user.password === password.value
-  );
+const loginUser = async () => {
+  try {
+    const dbReference = dbRef(db);
+    const snapshot = await get(child(dbReference, 'Users'));  // 'Users' должно быть строкой
+    if (snapshot.exists()) {
+      const users = snapshot.val();
+      console.log('Fetched users:', users);  // Отладочная строка
+      const user = Object.values(users).find(
+          user => user.login === username.value && user.password === password.value
+      );
 
-  if (user) {
-    // Успешная авторизация, перенаправление на страницу профиля
-    router.push({ path: '/profile' });
-  } else {
-    errorMessage.value = 'Неверный логин или пароль';
+      if (user) {
+        // Успешная авторизация, перенаправление на страницу профиля
+        router.push({ path: '/profile' });
+      } else {
+        errorMessage.value = 'Неверный логин или пароль';
+      }
+    } else {
+      errorMessage.value = 'Нет зарегистрированных пользователей';
+    }
+  } catch (error) {
+    console.error('Ошибка при авторизации: ', error);
+    errorMessage.value = 'Ошибка при авторизации!';
   }
 };
 </script>
