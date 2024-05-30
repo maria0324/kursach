@@ -4,7 +4,7 @@
       "id": "1",
       "firstName": "Ivan",
       "lastName": "Ivanov",
-      "middleName": "Ivanovich",
+      "patronymic": "Ivanovich",
       "speciality": "Doctor"
     }
   },
@@ -22,7 +22,7 @@
       "id": "1",
       "firstName": "Ivan",
       "lastName": "Ivanov",
-      "middleName": "Ivanovich",
+      "patronymic": "Ivanovich",
       "login": "ivan.ivanov",
       "password": "password123",
       "phoneNumber": "+123456789"

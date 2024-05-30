@@ -7,6 +7,7 @@ import Contacts from "@/components/Contacts.vue";
 import Login from "@/components/Login.vue";
 import Registration from "@/components/Registration.vue";
 import Modal from "@/components/Modal.vue";
+import Profile from "@/components/Profile.vue";
 
 
 const routes = [
@@ -49,6 +50,11 @@ const routes = [
         path: '/modal',
         name: 'modal',
         component: Modal
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component: Profile
     }
 
 ]
