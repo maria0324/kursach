@@ -1,9 +1,5 @@
-import { createApp } from 'vue';
-import App from "@/App.vue";
-import router from './router';
-import store from './store';
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCvmC0Udk4D3jOqqmRdV5Alp7Rq0rvFSjo",
@@ -16,7 +12,10 @@ const firebaseConfig = {
 };
 
 // Инициализация Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getDatabase(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-createApp(App).use(store).use(router).mount('#app');
+export { db };
+
+
+

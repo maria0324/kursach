@@ -5,12 +5,8 @@
   <div class="login-container">
     <h1>Авторизация</h1>
     <form class="login-form">
-      <label for="username">Логин</label>
-      <input type="text" id="username" name="username" />
-
-      <label for="password">Пароль</label>
-      <input type="password" id="password" name="password" />
-
+      <input type="text" id="username" placeholder="Логин" name="username" />
+      <input type="password" id="password" placeholder="Пароль" name="password" />
       <button type="submit">Войти</button>
       <router-link  class="register-link" to="/registration">Зарегистрироваться</router-link>
 

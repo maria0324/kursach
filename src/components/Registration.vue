@@ -5,27 +5,14 @@
   <div class="registration-container">
     <h1>Регистрация</h1>
     <form class="registration-form">
-      <label for="login">Логин</label>
-      <input type="text" id="login" name="login" />
 
-      <label for="password">Пароль</label>
-      <input type="password" id="password" name="password" />
-
-      <label for="confirm-password">Пароль</label>
-      <input type="password" id="confirm-password" name="confirm-password" />
-
-      <label for="first-name">Имя</label>
-      <input type="text" id="first-name" name="first-name" />
-
-      <label for="last-name">Фамилия</label>
-      <input type="text" id="last-name" name="last-name" />
-
-      <label for="patronymic">Отчество</label>
-      <input type="text" id="patronymic" name="patronymic" />
-
-      <label for="phone">Номер телефона</label>
-      <input type="text" id="phone" name="phone" />
-
+      <input type="text" id="login" placeholder="Логин" name="login" />
+      <input type="password" id="password" placeholder="Пароль" name="password" />
+      <input type="password" id="confirm-password" placeholder="Пароль" name="confirm-password" />
+      <input type="text" id="first-name" placeholder="Имя" name="first-name" />
+      <input type="text" id="last-name" placeholder="Фамилия" name="last-name" />
+      <input type="text" id="patronymic" placeholder="Отчество" name="patronymic" />
+      <input type="text" id="phone" placeholder="Номер телефона" name="phone" />
       <button type="submit">Зарегистрироваться</button>
     </form>
   </div>
@@ -35,10 +22,10 @@
 .registration-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: calc(100vh - 140px);
   text-align: center;
+  padding-bottom: 70px;
 }
 
 .registration-container h1 {

@@ -6,6 +6,8 @@ import About from "@/components/About.vue";
 import Contacts from "@/components/Contacts.vue";
 import Login from "@/components/Login.vue";
 import Registration from "@/components/Registration.vue";
+import Modal from "@/components/Modal.vue";
+
 
 const routes = [
     {
@@ -42,7 +44,13 @@ const routes = [
         path: '/registration',
         name: 'registration',
         component: Registration
+    },
+    {
+        path: '/modal',
+        name: 'modal',
+        component: Modal
     }
+
 ]
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),

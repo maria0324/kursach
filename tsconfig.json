@@ -1,0 +1,53 @@
+{
+  "Employees": {
+    "employee1": {
+      "id": "employee1",
+      "firstName": "Ivan",
+      "lastName": "Ivanov",
+      "middleName": "Ivanovich",
+      "position": "Manager"
+    }
+  },
+  "Records": {
+    "record1": {
+      "id": "record1",
+      "employeeId": "employee1",
+      "userId": "user1",
+      "timestamp": "2024-05-27T12:34:56Z",
+      "petId": "pet1"
+    }
+  },
+  "Users": {
+    "user1": {
+      "id": "user1",
+      "firstName": "Ivan",
+      "lastName": "Ivanov",
+      "middleName": "Ivanovich",
+      "login": "ivan.ivanov",
+      "password": "password123",
+      "phoneNumber": "+123456789"
+    }
+  },
+  "Pets": {
+    "pet1": {
+      "id": "pet1",
+      "ownerId": "user1",
+      "name": "Rex",
+      "breed": "German Shepherd",
+      "gender": "Male"
+    }
+  },
+  "Services": {
+    "service1": {
+      "id": "service1",
+      "name": "Grooming",
+      "price": 50
+    }
+  },
+  "Roles": {
+    "role1": {
+      "id": "role1",
+      "name": "Admin"
+    }
+  }
+}

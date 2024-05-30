@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="navbar">
       <a href="#">Главная</a>
       <router-link to="/doctors">Врачи</router-link>
@@ -16,7 +15,7 @@
       <p>Наша цель: обеспечить <br> индивидуальный подход к каждому <br> пациенту, став гарантом долгой, <br> здоровой и счастливой жизни Вашего <br> питомца.</p>
     </div>
     <div class="button-note">
-      <button>Записаться на прием</button>
+      <button >Записаться на прием</button>
     </div>
     <img class="start-dog" src="../../public/img/start-dog.png" alt="dog">
     <section class="who-services">
@@ -54,6 +53,8 @@
         </div>
       </div>
     </section>
+
+
   </div>
 </template>
 
