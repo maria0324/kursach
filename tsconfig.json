@@ -34,6 +34,7 @@
       "ownerId": "user1",
       "name": "Rex",
       "breed": "German Shepherd",
+      "type": "Dog",
       "gender": "Male"
     }
   },

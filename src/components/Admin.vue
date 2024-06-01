@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>Имя Фамилия</h3>
+          <h3>Администратор</h3>
         </div>
       </div>
       <nav class="profile-nav">
@@ -13,26 +13,12 @@
         <router-link to="/profile/edit">Редактировать данные</router-link>
       </nav>
     </header>
-    <section class="form-section">
-      <div class="add-pet-container">
-        <form class="add-pet-form">
-          <label>Добавление питомца</label>
-          <input v-model="name" type="text" id="name" placeholder="Кличка" name="name" required />
-          <input v-model="type" type="text" id="type" placeholder="Вид" name="type" required />
-          <input v-model="breed" type="text" id="breed" placeholder="Порода" name="breed" required />
-          <input v-model="gender" type="text" id="gender" placeholder="Пол" name="gender" required />
-          <button type="submit">Добавить питомца</button>
-          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        </form>
-      </div>
-    </section>
     <section class="pets-section">
       <div class="pet-card-container" v-for="pet in pets" :key="pet.id">
         <div class="pet-card">
           <p>Кличка: {{ pet.name }}</p>
-          <p>Вид: {{ pet.type }}</p>
+          <p>Род: {{ pet.type }}</p>
           <p>Порода: {{ pet.breed }}</p>
-          <p>Пол: {{ pet.gender }}</p>
           <button @click="deletePet(pet.id)">Удалить питомца</button>
         </div>
       </div>
@@ -44,9 +30,9 @@
 import { ref } from 'vue';
 
 const pets = ref([
-  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай', gender: 'Мужской' },
-  { id: 2, name: 'Луна', type: 'Кошка', breed: 'Сиамская', gender: 'Женский' },
-  { id: 3, name: 'Рекс', type: 'Пес', breed: 'Немецкая овчарка', gender: 'Мужской' }
+  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
+  { id: 2, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
+  { id: 3, name: 'Кокос', type: 'Пес', breed: 'Алабай' }
 ]);
 
 const deletePet = (id) => {
@@ -64,6 +50,8 @@ const deletePet = (id) => {
   width: 100%;
   overflow-x: hidden;
 }
+
+
 
 .profile-header {
   display: flex;
@@ -107,69 +95,11 @@ const deletePet = (id) => {
   font-size: 20px;
 }
 
-.form-section {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  width: 100%;
-}
-
-.add-pet-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.add-pet-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.add-pet-form label {
-  font-size: 24px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-.add-pet-form input {
-  width: 300px;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 20px;
-  border: none;
-  border-bottom: 2px solid #ffa500;
-}
-
-.add-pet-form button {
-  width: 300px;
-  padding: 10px;
-  font-size: 24px;
-  background-color: #3e3e3e;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-}
-
-.error-message {
-  color: red;
-  font-size: 18px;
-}
-
 .pets-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
-  width: 100%;
-}
-
-.pet-card-container {
-  display: flex;
-  justify-content: center;
-  margin: 10px;
 }
 
 .pet-card {
@@ -178,12 +108,31 @@ const deletePet = (id) => {
   border-radius: 10px;
   padding: 15px;
   margin: 10px;
-  height: 210px;
   width: 350px;
+  text-align: left;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.pet-card-container {
+  display: flex;
+  justify-content: center;
+}
+
+
+.pet-card {
+  background-color: #F5F5F5;
+  border: 1px solid #E0E0E0;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px;
+  width: 450px;
+  height: 170px;
   text-align: left;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
 }
+
 
 .pet-card button {
   background-color: #FF8C00;
@@ -200,7 +149,12 @@ const deletePet = (id) => {
   transform: translateX(-50%);
 }
 
+
+
 .pet-card p {
   margin: 20px 45px;
+
 }
+
+
 </style>

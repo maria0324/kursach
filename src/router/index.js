@@ -8,6 +8,8 @@ import Login from "@/components/Login.vue";
 import Registration from "@/components/Registration.vue";
 import Modal from "@/components/Modal.vue";
 import Profile from "@/components/Profile.vue";
+import MyRecords from "@/components/MyRecords.vue";
+import Admin from "@/components/Admin.vue";
 
 
 const routes = [
@@ -55,6 +57,18 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: Profile
+    },
+    {
+        path: '/profile/my-records',
+        name: 'profile/my-records',
+        component: MyRecords
+
+    },
+    {
+        path: '/admin',
+        name: 'admin',
+        component: Admin
+
     }
 
 ]

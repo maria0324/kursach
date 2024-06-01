@@ -20,22 +20,18 @@ import { ref } from 'vue';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref as dbRef, set } from "firebase/database";
 
-// Firebase конфигурация
-const firebaseConfig = {
-  apiKey: "AIzaSyCvmC0Udk4D3jOqqmRdV5Alp7Rq0rvFSjo",
-  authDomain: "vetclinic-6a468.firebaseapp.com",
-  databaseURL: "https://vetclinic-6a468-default-rtdb.firebaseio.com",
-  projectId: "vetclinic-6a468",
-  storageBucket: "vetclinic-6a468.appspot.com",
-  messagingSenderId: "1080872217369",
-  appId: "1:1080872217369:web:bba4407269cffd65dc3388"
-};
 
-// Инициализация Firebase
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+
+if (!firebaseConfig.apiKey) {
+  console.error('Firebase configuration is missing or invalid');
+}
+
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Декларация переменных для привязки к форме
+
 const login = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -45,7 +41,7 @@ const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
 
-// Функция регистрации пользователя
+
 const registerUser = () => {
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Пароли не совпадают';
@@ -53,7 +49,7 @@ const registerUser = () => {
   }
 
   const newUser = {
-    id: Date.now().toString(), // Используем текущий timestamp как уникальный ID
+    id: Date.now().toString(),
     firstName: firstName.value,
     lastName: lastName.value,
     patronymic: patronymic.value,
@@ -65,7 +61,7 @@ const registerUser = () => {
   const userRef = dbRef(db, 'Users/' + newUser.id);
   set(userRef, newUser)
       .then(() => {
-        // Очистка формы после регистрации
+
         login.value = '';
         password.value = '';
         confirmPassword.value = '';

@@ -34,16 +34,16 @@ const router = useRouter();
 const loginUser = async () => {
   try {
     const dbReference = dbRef(db);
-    const snapshot = await get(child(dbReference, 'Users'));  // 'Users' должно быть строкой
+    const snapshot = await get(child(dbReference, 'Users'));
     if (snapshot.exists()) {
       const users = snapshot.val();
-      console.log('Fetched users:', users);  // Отладочная строка
+      console.log('Fetched users:', users);
       const user = Object.values(users).find(
           user => user.login === username.value && user.password === password.value
       );
 
       if (user) {
-        // Успешная авторизация, перенаправление на страницу профиля
+
         router.push({ path: '/profile' });
       } else {
         errorMessage.value = 'Неверный логин или пароль';

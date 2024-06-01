@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="navbar">
-      <a href="#">Главная</a>
+      <router-link to="/">Главная</router-link>
       <router-link to="/doctors">Врачи</router-link>
-      <a href="#">Услуги и цены</a>
-      <a href="#">О клинике</a>
-      <a href="#">Контакты</a>
-      <a href="#">Вход</a>
+      <router-link to="/services">Услуги и цены</router-link>
+      <router-link to="/about">О клинике</router-link>
+      <router-link to="/contacts">Контакты</router-link>
+      <router-link to="/login">Вход</router-link>
+
     </div>
     <div class="main-text">
       <p>Ветеринарный <br> центр BestF</p>
