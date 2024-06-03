@@ -10,6 +10,9 @@ import Modal from "@/components/Modal.vue";
 import Profile from "@/components/Profile.vue";
 import MyRecords from "@/components/MyRecords.vue";
 import Admin from "@/components/Admin.vue";
+import EditData from "@/components/EditData.vue";
+import AddDoctor from "@/components/AddDoctor.vue";
+import Records from "@/components/Records.vue";
 
 
 const routes = [
@@ -65,9 +68,22 @@ const routes = [
 
     },
     {
+        path: '/profile/edit',
+        name: 'profile/edit',
+        component: EditData
+
+    },
+
+    {
         path: '/admin',
         name: 'admin',
-        component: Admin
+        component: AddDoctor
+
+    },
+    {
+        path: '/admin/records',
+        name: 'admin/records',
+        component: Records
 
     }
 

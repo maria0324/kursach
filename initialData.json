@@ -5,7 +5,8 @@
       "firstName": "Ivan",
       "lastName": "Ivanov",
       "patronymic": "Ivanovich",
-      "speciality": "Doctor"
+      "speciality": "Doctor",
+      "photo": "Doctor"
     }
   },
   "Records": {
@@ -20,11 +21,22 @@
   "Users": {
     "user1": {
       "id": "1",
+      "role": "1",
       "firstName": "Ivan",
       "lastName": "Ivanov",
       "patronymic": "Ivanovich",
       "login": "ivan.ivanov",
       "password": "password123",
+      "phoneNumber": "+123456789"
+    },
+    "user": {
+      "id": "1",
+      "role": "0",
+      "firstName": "Иван",
+      "lastName": "Петров",
+      "patronymic": "Иванович",
+      "login": "admin",
+      "password": "admin",
       "phoneNumber": "+123456789"
     }
   },
@@ -47,8 +59,12 @@
   },
   "Roles": {
     "role1": {
-      "id": "1",
-      "name": "Admin"
+      "id": "0",
+      "name": "admin"
+    },
+    "role2": {
+      "id": "2",
+      "name": "user"
     }
   }
 }

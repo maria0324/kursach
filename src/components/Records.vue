@@ -1,3 +1,7 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
   <div class="profile-container">
     <header class="profile-header">
@@ -13,32 +17,20 @@
         <router-link to="/admin/services">Услуги</router-link>
       </nav>
     </header>
-    <section class="pets-section">
-      <div class="pet-card-container" v-for="pet in pets" :key="pet.id">
-        <div class="pet-card">
-          <p>Кличка: {{ pet.name }}</p>
-          <p>Род: {{ pet.type }}</p>
-          <p>Порода: {{ pet.breed }}</p>
-          <button @click="deletePet(pet.id)">Удалить питомца</button>
-        </div>
-      </div>
-    </section>
   </div>
+  <section class="records-section">
+    <div class="record-card-container"  >
+      <div class="record-card">
+        <p>Питомец: </p>
+        <p>Вид: </p>
+        <p>Порода: </p>
+        <p>Врач: </p>
+        <p>Владелец: </p>
+        <p>Дата и время:</p>
+      </div>
+    </div>
+  </section>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-
-const pets = ref([
-  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 2, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 3, name: 'Кокос', type: 'Пес', breed: 'Алабай' }
-]);
-
-const deletePet = (id) => {
-  pets.value = pets.value.filter(pet => pet.id !== id);
-};
-</script>
 
 <style scoped>
 .profile-container {
@@ -51,8 +43,6 @@ const deletePet = (id) => {
   overflow-x: hidden;
 }
 
-
-
 .profile-header {
   display: flex;
   align-items: center;
@@ -62,31 +52,26 @@ const deletePet = (id) => {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   flex-wrap: wrap;
 }
-
 .profile-info {
   display: flex;
   align-items: center;
   margin-left: 100px;
 }
-
 .profile-image {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   margin-right: 20px;
 }
-
 .profile-name {
   font-size: 24px;
 }
-
 .profile-nav {
   display: flex;
   justify-content: space-around;
   flex-grow: 1;
   flex-wrap: wrap;
 }
-
 .profile-nav a {
   margin: 10px;
   text-decoration: none;
@@ -94,33 +79,13 @@ const deletePet = (id) => {
   font-weight: bold;
   font-size: 20px;
 }
-
-.pets-section {
+.records-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
 }
-
-.pet-card {
-  background-color: #F5F5F5;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px;
-  width: 350px;
-  text-align: left;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-
-.pet-card-container {
-  display: flex;
-  justify-content: center;
-}
-
-
-.pet-card {
+.record-card {
   background-color: #F5F5F5;
   border: 1px solid #E0E0E0;
   border-radius: 10px;
@@ -132,9 +97,7 @@ const deletePet = (id) => {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
 }
-
-
-.pet-card button {
+.record-card button {
   background-color: #FF8C00;
   font-size: 16px;
   color: white;
@@ -148,13 +111,11 @@ const deletePet = (id) => {
   left: 50%;
   transform: translateX(-50%);
 }
-
-
-
-.pet-card p {
+.record-card p {
   margin: 20px 45px;
-
 }
-
-
+.error-message {
+  color: red;
+  font-size: 18px;
+}
 </style>

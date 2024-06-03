@@ -11,7 +11,9 @@
         <router-link to="/services">Услуги и цены</router-link>
         <router-link to="/about">О клинике</router-link>
         <router-link to="/contacts">Контакты</router-link>
-        <router-link to="/login">Вход</router-link>
+        <router-link v-if="!isAuthenticated" to="/login">Вход</router-link>
+        <router-link v-else to="/profile">Профиль</router-link>
+        <a v-if="isAuthenticated" @click="logout">Выход</a>
       </div>
     </header>
 
@@ -50,7 +52,24 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const isAuthenticated = ref(false);
+    const router = useRouter();
+
+    const logout = () => {
+      isAuthenticated.value = false;
+      router.push('/');
+    };
+
+    return {
+      isAuthenticated,
+      logout,
+    };
+  },
   computed: {
     headerClass() {
       const route = this.$route.path;
@@ -110,12 +129,12 @@ body {
 
 
 .header-other {
-    background-image: url("../public/img/header-screen.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 140px;
+  background-image: url("../public/img/header-screen.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 140px;
 }
 
 

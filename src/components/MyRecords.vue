@@ -13,9 +13,9 @@
         <router-link to="/profile/edit">Редактировать данные</router-link>
       </nav>
     </header>
-    <section class="records-section">
-      <div class="record-card-container" v-for="pet in pets" :key="pet.id">
-        <div class="record-card">
+    <section class="my-records-section">
+      <div class="my-record-card-container" v-for="pet in pets" :key="pet.id">
+        <div class="my-record-card">
           <p>Питомец: {{ pet.name }}</p>
           <p>Врач: {{ pet.type }}</p>
           <p>Время: {{ pet.breed }}</p>
@@ -94,14 +94,14 @@ const deletePet = (id) => {
   font-size: 20px;
 }
 
-.records-section {
+.my-records-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
 }
 
-.record-card {
+.my-record-card {
   background-color: #F5F5F5;
   border: 1px solid #E0E0E0;
   border-radius: 10px;
@@ -113,13 +113,13 @@ const deletePet = (id) => {
 }
 
 
-.record-card-container {
+.my-record-card-container {
   display: flex;
   justify-content: center;
 }
 
 
-.record-card {
+.my-record-card {
   background-color: #F5F5F5;
   border: 1px solid #E0E0E0;
   border-radius: 10px;
@@ -133,7 +133,7 @@ const deletePet = (id) => {
 }
 
 
-.record-card button {
+.my-record-card button {
   background-color: #FF8C00;
   font-size: 16px;
   color: white;
@@ -150,7 +150,7 @@ const deletePet = (id) => {
 
 
 
-.record-card p {
+.my-record-card p {
   margin: 20px 45px;
 
 }

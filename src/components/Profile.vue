@@ -15,7 +15,7 @@
     </header>
     <section class="form-section">
       <div class="add-pet-container">
-        <form class="add-pet-form">
+        <form class="add-pet-form" @submit.prevent="addPet">
           <label>Добавление питомца</label>
           <input v-model="name" type="text" id="name" placeholder="Кличка" name="name" required />
           <input v-model="type" type="text" id="type" placeholder="Вид" name="type" required />
@@ -41,18 +41,92 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref as dbRef, push, onValue, remove } from 'firebase/database';
 
-const pets = ref([
-  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай', gender: 'Мужской' },
-  { id: 2, name: 'Луна', type: 'Кошка', breed: 'Сиамская', gender: 'Женский' },
-  { id: 3, name: 'Рекс', type: 'Пес', breed: 'Немецкая овчарка', gender: 'Мужской' }
-]);
+// Firebase configuration
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-const deletePet = (id) => {
-  pets.value = pets.value.filter(pet => pet.id !== id);
+// State variables
+const pets = ref([]);
+const name = ref('');
+const type = ref('');
+const breed = ref('');
+const gender = ref('');
+const errorMessage = ref('');
+
+// Load pets from database on component mount
+onMounted(() => {
+  const petsRef = dbRef(db, 'Pets');
+  onValue(petsRef, (snapshot) => {
+    const petsData = snapshot.val();
+    if (petsData) {
+      pets.value = Object.keys(petsData).map(key => ({
+        id: key,
+        ...petsData[key]
+      }));
+    }
+  }, (error) => {
+    console.error('Ошибка при получении данных из Firebase:', error);
+  });
+});
+
+// Function to add a pet
+const addPet = async () => {
+  try {
+    const newPet = {
+      name: name.value,
+      type: type.value,
+      breed: breed.value,
+      gender: gender.value,
+    };
+
+    const petRef = dbRef(db, 'Pets');
+    await push(petRef, newPet);
+
+    // Fetch the latest pets from the database
+    onValue(petRef, (snapshot) => {
+      const petsData = snapshot.val();
+      if (petsData) {
+        pets.value = Object.keys(petsData).map(key => ({
+          id: key,
+          ...petsData[key]
+        }));
+      }
+    });
+
+    // Clear form inputs
+    name.value = '';
+    type.value = '';
+    breed.value = '';
+    gender.value = '';
+    errorMessage.value = '';
+  } catch (error) {
+    console.error('Ошибка при добавлении питомца:', error);
+    errorMessage.value = 'Ошибка при добавлении питомца!';
+  }
+};
+
+// Function to delete a pet
+const deletePet = async (id) => {
+  try {
+    const petRef = dbRef(db, `Pets/${id}`);
+    await remove(petRef);
+
+    // Удаляем питомца из списка отображаемых питомцев
+    pets.value = pets.value.filter(pet => pet.id !== id);
+  } catch (error) {
+    console.error('Ошибка при удалении питомца:', error);
+  }
 };
 </script>
+
+
+
+
 
 <style scoped>
 .profile-container {
