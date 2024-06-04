@@ -43,9 +43,9 @@ const loginUser = async () => {
       );
 
       if (user) {
-        if (user.role === '0') {  // Assuming '0' is the admin role
+        if (user.role === '0') {  // Admin role
           router.push({ path: '/admin' });
-        } else if (user.role === '1') {  // Assuming '1' is the user role
+        } else if (user.role === '1') {  // User role
           router.push({ path: '/profile' });
         } else {
           errorMessage.value = 'Неизвестная роль пользователя';

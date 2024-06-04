@@ -13,30 +13,113 @@
         <router-link to="/admin/services">Услуги</router-link>
       </nav>
     </header>
-    <section class="pets-section">
-      <div class="pet-card-container" v-for="pet in pets" :key="pet.id">
-        <div class="pet-card">
-          <p>Кличка: {{ pet.name }}</p>
-          <p>Род: {{ pet.type }}</p>
-          <p>Порода: {{ pet.breed }}</p>
-          <button @click="deletePet(pet.id)">Удалить питомца</button>
+    <div class="registration-container">
+      <h1>Добавление врача</h1>
+      <form class="registration-form" @submit.prevent="addDoctor">
+        <input v-model="lastname" type="text" placeholder="Фамилия врача" required />
+        <input v-model="firstname" type="text" placeholder="Имя врача" required />
+        <input v-model="patronymic" type="text" placeholder="Отчество врача" required />
+        <input v-model="speciality" type="text" placeholder="Специальность врача" required />
+        <div class="file-input-container">
+          <input type="file" id="photo" ref="photoInput" class="file-input" required />
+          <label for="photo" class="file-input-label">Выберите фотографию</label>
+        </div>
+        <button type="submit">Добавить врача</button>
+      </form>
+    </div>
+    <div class="doctors-section">
+      <h2>Наши врачи</h2>
+      <div class="doctors-list">
+        <div class="doctor-card" v-for="doctor in doctors" :key="doctor.id">
+          <img :src="doctor.photo" alt="Фото врача" class="doctor-photo" />
+          <h3>{{ doctor.lastname }} {{ doctor.firstname }} {{ doctor.patronymic }}</h3>
+          <p>Хирург</p>
+          <button @click="deleteDoctor(doctor.id)">Удалить врача</button>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref as dbRef, push, onValue, remove } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const pets = ref([
-  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 2, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 3, name: 'Кокос', type: 'Пес', breed: 'Алабай' }
-]);
+// Firebase configuration
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
-const deletePet = (id) => {
-  pets.value = pets.value.filter(pet => pet.id !== id);
+// State variables
+const lastname = ref('');
+const firstname = ref('');
+const patronymic = ref('');
+const speciality = ref('');
+const photoInput = ref(null);
+const doctors = ref([]);
+
+// Fetch doctors from the database on component mount
+onMounted(() => {
+  const doctorRef = dbRef(db, 'Doctors');
+  onValue(doctorRef, (snapshot) => {
+    const data = snapshot.val();
+    doctors.value = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  });
+});
+
+// Function to add a doctor
+const addDoctor = async () => {
+  try {
+    const photoFile = photoInput.value.files[0];
+    if (!photoFile) {
+      throw new Error('Файл фотографии не выбран');
+    }
+
+    const storageReference = storageRef(storage, `doctorPhotos/${photoFile.name}`);
+    await uploadBytes(storageReference, photoFile);
+    const photoURL = await getDownloadURL(storageReference);
+
+    const newDoctor = {
+      lastname: lastname.value,
+      firstname: firstname.value,
+      patronymic: patronymic.value,
+      speciality: speciality.value,
+      photo: photoURL
+    };
+
+    const doctorReference = dbRef(db, 'Doctors');
+    await push(doctorReference, newDoctor);
+
+    lastname.value = '';
+    firstname.value = '';
+    patronymic.value = '';
+    speciality.value = '';
+    photoInput.value.value = '';
+
+    alert('Врач успешно добавлен!');
+  } catch (error) {
+    console.error('Ошибка при добавлении врача:', error);
+    alert('Ошибка при добавлении врача. Пожалуйста, попробуйте еще раз.');
+  }
+};
+
+// Function to delete a doctor
+const deleteDoctor = async (doctorId) => {
+  try {
+    const doctorReference = dbRef(db, `Doctors/${doctorId}`);
+    await remove(doctorReference);
+
+    // Remove the doctor from the local state
+    doctors.value = doctors.value.filter(doctor => doctor.id !== doctorId);
+
+    alert('Врач успешно удален!');
+  } catch (error) {
+    console.error('Ошибка при удалении врача:', error);
+    alert('Ошибка при удалении врача. Пожалуйста, попробуйте еще раз.');
+  }
 };
 </script>
 
@@ -50,8 +133,6 @@ const deletePet = (id) => {
   width: 100%;
   overflow-x: hidden;
 }
-
-
 
 .profile-header {
   display: flex;
@@ -95,66 +176,128 @@ const deletePet = (id) => {
   font-size: 20px;
 }
 
-.pets-section {
+.registration-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
-  margin-top: 20px;
+  height: calc(100vh - 140px);
+  text-align: center;
+  padding-bottom: 70px;
 }
-
-.pet-card {
-  background-color: #F5F5F5;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px;
-  width: 350px;
-  text-align: left;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.registration-container h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
 }
-
-
-.pet-card-container {
+.registration-form {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
-
-
-.pet-card {
-  background-color: #F5F5F5;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px;
-  width: 450px;
-  height: 170px;
-  text-align: left;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative;
+.registration-form label {
+  font-size: 24px;
+  margin-bottom: 5px;
 }
-
-
-.pet-card button {
-  background-color: #FF8C00;
-  font-size: 16px;
-  color: white;
-  width: 200px;
-  border: none;
+.registration-form input {
+  width: 300px;
   padding: 10px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  border: none;
+  border-bottom: 2px solid #ffa500;
+}
+.registration-form .file-input-container {
+  position: relative;
+  width: 300px;
+  margin-bottom: 20px;
+}
+.registration-form .file-input {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.registration-form .file-input-label {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  background-color: #3e3e3e;
+  color: white;
   border-radius: 30px;
   cursor: pointer;
+}
+.registration-form button {
+  width: 300px;
+  padding: 10px;
+  font-size: 24px;
+  background-color: #3e3e3e;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+
+.doctor-photo {
+  width: 200px;
+  height: 300px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 2px solid transparent;
+}
+.doctor-photo:hover {
+  border: 2px solid #007BFF;
+}
+.doctors-section {
+  margin-top: 20px;
+}
+.doctors-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.doctor-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  width: 220px;
+  position: relative;
+}
+.doctor-card h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+}
+.doctor-card p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+.delete-button {
   position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
-
-
-
-.pet-card p {
-  margin: 20px 45px;
-
+.delete-button img {
+  width: 20px;
+  height: 20px;
 }
-
-
+.doctor-card button {
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
 </style>

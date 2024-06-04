@@ -1,37 +1,127 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="profile-container">
     <header class="profile-header">
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>Администратор</h3>
+          <h3>Имя Фамилия</h3>
         </div>
       </div>
       <nav class="profile-nav">
-        <router-link to="/admin">Врачи</router-link>
-        <router-link to="/admin/records">Записи</router-link>
-        <router-link to="/admin/services">Услуги</router-link>
+        <router-link to="/profile">Мои питомцы</router-link>
+        <router-link to="/profile/my-records">Мои записи</router-link>
+        <router-link to="/profile/edit">Редактировать данные</router-link>
       </nav>
     </header>
-
-  </div>
-  <div class="registration-container">
-    <h1>Добавление врача</h1>
-    <form class="registration-form" >
-      <input  type="text" id="lastname" placeholder="Фамилия врача" name="lastname" required />
-      <input  type="text" id="firstname" placeholder="Имя врача" name="firstname" required />
-      <input  type="text" id="patronymic" placeholder="Отчество врача" name="patronymic" required />
-      <input  type="text" id="speciality" placeholder="Специальность  врача" name="speciality" required />
-      <input  type="text" id="photo" placeholder="Фотография врача" name="photo" required />
-      <button type="submit">Добавить</button>
-
-    </form>
+    <div class="registration-container">
+      <h1>Добавление врача</h1>
+      <form class="registration-form" @submit.prevent="addDoctor">
+        <input v-model="lastname" type="text" placeholder="Фамилия врача" required />
+        <input v-model="firstname" type="text" placeholder="Имя врача" required />
+        <input v-model="patronymic" type="text" placeholder="Отчество врача" required />
+        <input v-model="speciality" type="text" placeholder="Специальность врача" required />
+        <div class="file-input-container">
+          <input type="file" id="photo" ref="photoInput" class="file-input" required />
+          <label for="photo" class="file-input-label">Выберите фотографию</label>
+        </div>
+        <button type="submit">Добавить врача</button>
+      </form>
+    </div>
+    <div class="doctors-section">
+      <h2>Наши врачи</h2>
+      <div class="doctors-list">
+        <div class="doctor-card" v-for="doctor in doctors" :key="doctor.id">
+          <img :src="doctor.photo" alt="Фото врача" class="doctor-photo" />
+          <h3>{{ doctor.lastname }} {{ doctor.firstname }} {{ doctor.patronymic }}</h3>
+          <p>Специальность: {{ doctor.speciality }}</p>
+          <button @click="deleteDoctor(doctor.id)">Удалить врача</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref as dbRef, push, onValue, remove } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+// Firebase configuration
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+// State variables
+const lastname = ref('');
+const firstname = ref('');
+const patronymic = ref('');
+const speciality = ref('');
+const photoInput = ref(null);
+const doctors = ref([]);
+
+// Fetch doctors from the database on component mount
+onMounted(() => {
+  const doctorRef = dbRef(db, 'Doctors');
+  onValue(doctorRef, (snapshot) => {
+    const data = snapshot.val();
+    doctors.value = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+  });
+});
+
+// Function to add a doctor
+const addDoctor = async () => {
+  try {
+    const photoFile = photoInput.value.files[0];
+    if (!photoFile) {
+      throw new Error('Файл фотографии не выбран');
+    }
+
+    const storageReference = storageRef(storage, `doctorPhotos/${photoFile.name}`);
+    await uploadBytes(storageReference, photoFile);
+    const photoURL = await getDownloadURL(storageReference);
+
+    const newDoctor = {
+      lastname: lastname.value,
+      firstname: firstname.value,
+      patronymic: patronymic.value,
+      speciality: speciality.value,
+      photo: photoURL
+    };
+
+    const doctorReference = dbRef(db, 'Doctors');
+    await push(doctorReference, newDoctor);
+
+    lastname.value = '';
+    firstname.value = '';
+    patronymic.value = '';
+    speciality.value = '';
+    photoInput.value.value = '';
+
+    alert('Врач успешно добавлен!');
+  } catch (error) {
+    console.error('Ошибка при добавлении врача:', error);
+    alert('Ошибка при добавлении врача. Пожалуйста, попробуйте еще раз.');
+  }
+};
+
+// Function to delete a doctor
+const deleteDoctor = async (doctorId) => {
+  try {
+    const doctorReference = dbRef(db, `Doctors/${doctorId}`);
+    await remove(doctorReference);
+
+    // Remove the doctor from the local state
+    doctors.value = doctors.value.filter(doctor => doctor.id !== doctorId);
+
+    alert('Врач успешно удален!');
+  } catch (error) {
+    console.error('Ошибка при удалении врача:', error);
+    alert('Ошибка при удалении врача. Пожалуйста, попробуйте еще раз.');
+  }
+};
+</script>
 
 <style scoped>
 .profile-container {
@@ -43,8 +133,6 @@
   width: 100%;
   overflow-x: hidden;
 }
-
-
 
 .profile-header {
   display: flex;
@@ -117,6 +205,29 @@
   border: none;
   border-bottom: 2px solid #ffa500;
 }
+.registration-form .file-input-container {
+  position: relative;
+  width: 300px;
+  margin-bottom: 20px;
+}
+.registration-form .file-input {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.registration-form .file-input-label {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  background-color: #3e3e3e;
+  color: white;
+  border-radius: 30px;
+  cursor: pointer;
+}
 .registration-form button {
   width: 300px;
   padding: 10px;
@@ -126,6 +237,37 @@
   border: none;
   border-radius: 30px;
   cursor: pointer;
+}
+.doctor-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.doctors-section {
+  margin-top: 20px;
+}
+.doctors-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.doctor-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  width: 200px;
+}
+.doctor-card button {
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 .error-message {
   color: red;

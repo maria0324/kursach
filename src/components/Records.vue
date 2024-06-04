@@ -26,7 +26,9 @@
         <p>Порода: </p>
         <p>Врач: </p>
         <p>Владелец: </p>
+        <p>Номер владелеца: </p>
         <p>Дата и время:</p>
+        <p>Услуга:</p>
       </div>
     </div>
   </section>
@@ -92,7 +94,7 @@
   padding: 15px;
   margin: 10px;
   width: 450px;
-  height: 170px;
+  height: 340px;
   text-align: left;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;

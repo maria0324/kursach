@@ -18,8 +18,35 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { getDatabase, ref as dbRef, onValue } from 'firebase/database';
 
+const db = getDatabase();
+
+const doctors = ref([]);
+const specialities = ref([]);
+const selectedSpeciality = ref('');
+
+onMounted(() => {
+  const doctorRef = dbRef(db, 'Doctors');
+  onValue(doctorRef, (snapshot) => {
+    const data = snapshot.val();
+    doctors.value = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+    // Update specialities list
+    specialities.value = Array.from(new Set(doctors.value.map(doctor => doctor.speciality)));
+  });
+});
+
+// Filtering doctors based on selected speciality
+const filteredDoctors = ref([]);
+watch(selectedSpeciality, () => {
+  if (!selectedSpeciality.value) {
+    filteredDoctors.value = doctors.value;
+  } else {
+    filteredDoctors.value = doctors.value.filter(doctor => doctor.speciality === selectedSpeciality.value);
+  }
+});
 </script>
 
 <style scoped>
@@ -35,7 +62,6 @@
 
 .search-bar {
   margin-bottom: 40px;
-  margin-right: 1300px;
 }
 
 .search-bar label {

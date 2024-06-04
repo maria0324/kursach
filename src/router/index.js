@@ -77,7 +77,7 @@ const routes = [
     {
         path: '/admin',
         name: 'admin',
-        component: AddDoctor
+        component: Admin
 
     },
     {

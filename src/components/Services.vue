@@ -83,8 +83,8 @@
 
 .services-section {
 
-  margin: 0 auto; /* Изменено */
-  max-width: 800px; /* Добавлено (можете настроить под ваши потребности) */
+  margin: 0 auto;
+  max-width: 800px;
 }
 
 .services-section h2 {
