@@ -19,6 +19,7 @@
           <p>Питомец: {{ pet.name }}</p>
           <p>Врач: {{ pet.type }}</p>
           <p>Время: {{ pet.breed }}</p>
+          <p>Услуга:</p>
         </div>
       </div>
     </section>

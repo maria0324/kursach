@@ -77,11 +77,7 @@ body{
   font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.logo{
-  position: relative;
-  top: 25px;
-  left: 100px;
-}
+
 
 .start-dog{
   position: absolute;
@@ -211,15 +207,7 @@ footer{
   position: absolute;
   top: 1860px;
 }
-.footer-navbar {
-  position: absolute;
-  top: 75px;
-  left: 320px;
-  text-align: center;
-  display: flex;
-  justify-content: space-between;
-  width: 60%;
-}
+
 .footer-navbar a{
   text-decoration: none;
   padding-top: 15px;
@@ -228,36 +216,13 @@ footer{
   color: white;
   text-align: left;
 }
-.footer-column {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-}
-.footer-column:not(:first-child) {
-  padding-right: 400px;
-}
 
-.footer-contact{
-  position: absolute;
-  top: 50px;
-  left: 1160px;
-}
 
 .footer-contact p{
   font-size: 20px;
   color: #D9B8A1;
 }
 
-.contact-item {
-  display: flex;
-  align-items: center;
-  padding-top: 25px
-}
-.footer-puppy{
-  position: absolute;
-  top: 23px;
-  right: 100px;
-}
 </style>
 
 

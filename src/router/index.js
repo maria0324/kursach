@@ -13,6 +13,7 @@ import Admin from "@/components/Admin.vue";
 import EditData from "@/components/EditData.vue";
 import AddDoctor from "@/components/AddDoctor.vue";
 import Records from "@/components/Records.vue";
+import EditServices from "@/components/EditServices.vue";
 
 
 const routes = [
@@ -84,6 +85,12 @@ const routes = [
         path: '/admin/records',
         name: 'admin/records',
         component: Records
+
+    },
+    {
+        path: '/admin/services',
+        name: 'admin/services',
+        component: EditServices
 
     }
 

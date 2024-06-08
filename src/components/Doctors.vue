@@ -11,7 +11,7 @@
     <div class="doctors-list">
       <div class="doctor-card" v-for="doctor in filteredDoctors" :key="doctor.id">
         <img :src="doctor.photo" :alt="doctor.name">
-        <h2>{{ doctor.name }}</h2>
+        <h3>{{ doctor.lastname }} {{ doctor.firstname }} {{ doctor.patronymic }}</h3>
         <p>{{ doctor.speciality }}</p>
       </div>
     </div>
@@ -19,11 +19,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { getDatabase, ref as dbRef, onValue } from 'firebase/database';
+import {ref, onMounted, watch} from 'vue';
+import {getDatabase, ref as dbRef, onValue} from 'firebase/database';
 
 const db = getDatabase();
-
 const doctors = ref([]);
 const specialities = ref([]);
 const selectedSpeciality = ref('');
@@ -32,21 +31,24 @@ onMounted(() => {
   const doctorRef = dbRef(db, 'Doctors');
   onValue(doctorRef, (snapshot) => {
     const data = snapshot.val();
-    doctors.value = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+    doctors.value = data ? Object.keys(data).map(key => ({id: key, ...data[key]})) : [];
     // Update specialities list
     specialities.value = Array.from(new Set(doctors.value.map(doctor => doctor.speciality)));
+    // Set filteredDoctors initially
+    filteredDoctors.value = doctors.value;
   });
 });
 
 // Filtering doctors based on selected speciality
 const filteredDoctors = ref([]);
-watch(selectedSpeciality, () => {
+
+watch([selectedSpeciality, doctors], () => {
   if (!selectedSpeciality.value) {
     filteredDoctors.value = doctors.value;
   } else {
     filteredDoctors.value = doctors.value.filter(doctor => doctor.speciality === selectedSpeciality.value);
   }
-});
+}, {immediate: true});
 </script>
 
 <style scoped>
@@ -96,7 +98,7 @@ watch(selectedSpeciality, () => {
   border-radius: 15px;
 }
 
-.doctor-card h2 {
+.doctor-card h3 {
   font-size: 20px;
   margin: 10px 0;
 }
