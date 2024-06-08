@@ -20,17 +20,14 @@ import { ref } from 'vue';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref as dbRef, set } from "firebase/database";
 
-
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 
 if (!firebaseConfig.apiKey) {
   console.error('Firebase configuration is missing or invalid');
 }
 
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 
 const login = ref('');
 const password = ref('');
@@ -40,7 +37,6 @@ const lastName = ref('');
 const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
-
 
 const registerUser = () => {
   if (password.value !== confirmPassword.value) {
@@ -56,12 +52,12 @@ const registerUser = () => {
     login: login.value,
     password: password.value,
     phoneNumber: phone.value,
+    role: '1'  // Устанавливаем значение роли по умолчанию
   };
 
   const userRef = dbRef(db, 'Users/' + newUser.id);
   set(userRef, newUser)
       .then(() => {
-
         login.value = '';
         password.value = '';
         confirmPassword.value = '';
