@@ -1,3 +1,4 @@
+import store from '../store';
 import { createRouter, createWebHistory } from 'vue-router'
 import Doctors from "@/components/Doctors.vue";
 import Home from "@/components/Home.vue";
@@ -15,6 +16,21 @@ import AddDoctor from "@/components/AddDoctor.vue";
 import Records from "@/components/Records.vue";
 import EditServices from "@/components/EditServices.vue";
 
+const ifNotAuthenticated = (to, from, next) => {
+    if (!store.getters.isAuthenticated) {
+        next();
+        return;
+    }
+    next('/');
+};
+
+const ifAuthenticated = (to, from, next) => {
+    if (store.getters.isAuthenticated) {
+        next();
+        return;
+    }
+    next('/login')
+}
 
 const routes = [
     {
@@ -60,7 +76,8 @@ const routes = [
     {
         path: '/profile',
         name: 'profile',
-        component: Profile
+        component: Profile,
+        beforeEnter: ifAuthenticated,
     },
     {
         path: '/profile/my-records',

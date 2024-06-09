@@ -14,38 +14,47 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref as dbRef, get, child } from "firebase/database";
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref as dbRef, get, child } from 'firebase/database';
 
+// Firebase configuration
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 
 if (!firebaseConfig.apiKey) {
   console.error('Firebase configuration is missing or invalid');
 }
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Reactive variables
 const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
+// Login function
 const loginUser = async () => {
   try {
     const dbReference = dbRef(db);
     const snapshot = await get(child(dbReference, 'Users'));
+
     if (snapshot.exists()) {
       const users = snapshot.val();
-      console.log('Fetched users:', users);
       const user = Object.values(users).find(
           user => user.login === username.value && user.password === password.value
       );
 
       if (user) {
-        if (user.role === '0') {  // Admin role
+        // Generate a simple token for the session (for demo purposes)
+        const token = btoa(`${username.value}:${password.value}`);
+        localStorage.setItem('token', `Bearer ${token}`);
+
+        // Redirect based on user role
+        if (user.role === '0') {
           router.push({ path: '/admin' });
-        } else if (user.role === '1') {  // User role
+        } else if (user.role === '1') {
           router.push({ path: '/profile' });
         } else {
           errorMessage.value = 'Неизвестная роль пользователя';
@@ -80,10 +89,6 @@ const loginUser = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.login-form label {
-  font-size: 24px;
-  margin-bottom: 5px;
 }
 .login-form input {
   width: 300px;
