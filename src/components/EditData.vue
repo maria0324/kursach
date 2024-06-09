@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>Имя Фамилия</h3>
+          <h3>{{ firstName }} {{ lastName }}</h3>
         </div>
       </div>
       <nav class="profile-nav">
@@ -14,8 +14,7 @@
       </nav>
     </header>
     <div class="edit-container">
-
-      <form class="edit-form" @submit.prevent="registerUser">
+      <form class="edit-form" @submit.prevent="updateUser">
         <input v-model="login" type="text" id="login" placeholder="Логин" name="login" required />
         <input v-model="password" type="password" id="password" placeholder="Пароль" name="password" required />
         <input v-model="confirmPassword" type="password" id="confirm-password" placeholder="Подтвердите пароль" name="confirm-password" required />
@@ -31,12 +30,68 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { getAuth, updateProfile, updateEmail, updatePassword } from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
+const auth = getAuth();
+const db = getFirestore();
+
+const login = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const firstName = ref('');
+const lastName = ref('');
+const patronymic = ref('');
+const phone = ref('');
+const errorMessage = ref('');
+
+const fetchUserData = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      login.value = user.email;
+      firstName.value = userData.firstName || '';
+      lastName.value = userData.lastName || '';
+      patronymic.value = userData.patronymic || '';
+      phone.value = userData.phone || '';
+    }
+  }
+};
+
+const updateUser = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    if (password.value !== confirmPassword.value) {
+      errorMessage.value = 'Пароли не совпадают';
+      return;
+    }
+
+    try {
+      await updateEmail(user, login.value);
+      if (password.value) {
+        await updatePassword(user, password.value);
+      }
+      await updateProfile(user, {
+        displayName: `${firstName.value} ${lastName.value}`
+      });
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        patronymic: patronymic.value,
+        phone: phone.value
+      });
+      errorMessage.value = 'Данные успешно обновлены';
+    } catch (error) {
+      errorMessage.value = `Ошибка: ${error.message}`;
+    }
+  }
+};
+
+onMounted(fetchUserData);
 </script>
-
-
-
-
 
 <style scoped>
 .profile-container {
