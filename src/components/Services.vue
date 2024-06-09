@@ -1,72 +1,56 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="services-container">
     <h1 class="title-services">Услуги и цены</h1>
-    <div class="services-section">
-      <h2>Прием специалистов</h2>
+    <div class="services-section" v-if="services.length > 0">
+      <h2>Список предоставляемых услуг</h2>
       <ul>
-        <li>
-          Терапевтический прием: <span>1000 Р</span>
-        </li>
-        <li>
-          Кардиологический прием: <span>1000 Р</span>
-        </li>
-        <li>
-          Первичный прием (неотложный): <span>450 Р</span>
+        <li v-for="service in services" :key="service.id">
+          {{ service.name }}: <span>{{ service.price }} ₽</span>
         </li>
       </ul>
     </div>
-    <div class="services-section">
-      <h2>Лабораторная диагностика</h2>
-      <ul>
-        <li>
-          Общий анализ крови: <span>1200 Р</span>
-        </li>
-        <li>
-          Биохимическое исследование крови<br> (5 показателей): <span>1800 Р</span>
-        </li>
-        <li>
-          Биохимическое исследование кров<br> (12 показателей): <span>2500 Р</span>
-        </li>
-        <li>
-          Биохимический анализ крови: <span>800 Р</span>
-        </li>
-      </ul>
-    </div>
-    <div class="services-section">
-      <h2>УЗИ - диагностика</h2>
-      <ul>
-        <li>
-          УЗИ одного органа (глаз, почка и т.д.): <span>500 Р</span>
-        </li>
-        <li>
-          УЗИ органов брюшной полости: <span>1500 Р</span>
-        </li>
-        <li>
-          УЗИ мочеполовой системы: <span>800 Р</span>
-        </li>
-        <li>
-          УЗИ сердца: <span>1000 Р</span>
-        </li>
-      </ul>
-    </div>
-    <div class="services-section">
-      <h2>Социальные операции</h2>
-      <ul>
-        <li>
-          Стерилизация: <span>2700 Р</span>
-        </li>
-        <li>
-          Чипирование: <span>1500 Р</span>
-        </li>
-      </ul>
+    <div class="services-section" v-else>
+      <p>Загрузка услуг...</p>
     </div>
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref as dbRef, get } from 'firebase/database';
+
+// Initialize Firebase
+const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
+
+if (!firebaseConfig.apiKey) {
+  console.error('Firebase configuration is missing or invalid');
+}
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const services = ref([]);
+
+const fetchServices = async () => {
+  try {
+    const servicesRef = dbRef(db, 'Services');
+    const snapshot = await get(servicesRef);
+    if (snapshot.exists()) {
+      services.value = Object.entries(snapshot.val()).map(([key, value]) => ({
+        id: key,
+        ...value
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching services:', error);
+  }
+};
+
+onMounted(() => {
+  fetchServices();
+});
+</script>
 
 <style scoped>
 .services-container {
@@ -82,7 +66,6 @@
 }
 
 .services-section {
-
   margin: 0 auto;
   max-width: 800px;
 }

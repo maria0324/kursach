@@ -12,7 +12,7 @@
     <form @submit.prevent="updateService" class="service-form">
       <div class="input-group">
         <select v-model="selectedServiceId">
-          <option v-for="service in services" :key="service.id" :value="service.id">
+          <option  v-for="service in services" :key="service.id"  :value="service.id" >
             {{ service.name }}
           </option>
         </select>
