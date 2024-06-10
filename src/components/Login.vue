@@ -19,12 +19,6 @@ import { getDatabase, ref as dbRef, get, child } from 'firebase/database';
 
 // Firebase configuration
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
-
-if (!firebaseConfig.apiKey) {
-  console.error('Firebase configuration is missing or invalid');
-}
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -47,11 +41,10 @@ const loginUser = async () => {
       );
 
       if (user) {
-        // Generate a simple token for the session (for demo purposes)
         const token = btoa(`${username.value}:${password.value}`);
         localStorage.setItem('token', `Bearer ${token}`);
+        localStorage.setItem('userId', user.id); // Store user ID
 
-        // Redirect based on user role
         if (user.role === '0') {
           router.push({ path: '/admin' });
         } else if (user.role === '1') {
@@ -71,6 +64,7 @@ const loginUser = async () => {
   }
 };
 </script>
+
 
 <style scoped>
 .login-container {

@@ -16,8 +16,8 @@
     <div class="edit-container">
       <form class="edit-form" @submit.prevent="updateUser">
         <input v-model="login" type="text" id="login" placeholder="Логин" name="login" required />
-        <input v-model="password" type="password" id="password" placeholder="Пароль" name="password" required />
-        <input v-model="confirmPassword" type="password" id="confirm-password" placeholder="Подтвердите пароль" name="confirm-password" required />
+        <input v-model="password" type="password" id="password" placeholder="Пароль" name="password" />
+        <input v-model="confirmPassword" type="password" id="confirm-password" placeholder="Подтвердите пароль" name="confirm-password" />
         <input v-model="firstName" type="text" id="first-name" placeholder="Имя" name="first-name" required />
         <input v-model="lastName" type="text" id="last-name" placeholder="Фамилия" name="last-name" required />
         <input v-model="patronymic" type="text" id="patronymic" placeholder="Отчество" name="patronymic" />
@@ -31,7 +31,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getAuth, updateProfile, updateEmail, updatePassword } from 'firebase/auth';
+import { getAuth, updateEmail, updatePassword, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const auth = getAuth();
@@ -49,28 +49,36 @@ const errorMessage = ref('');
 const fetchUserData = async () => {
   const user = auth.currentUser;
   if (user) {
+    console.log("Authenticated user: ", user);
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (userDoc.exists()) {
       const userData = userDoc.data();
+      console.log("Fetched user data: ", userData);
       login.value = user.email;
       firstName.value = userData.firstName || '';
       lastName.value = userData.lastName || '';
       patronymic.value = userData.patronymic || '';
       phone.value = userData.phone || '';
+    } else {
+      console.error("No such document!");
     }
+  } else {
+    console.error("No authenticated user found!");
   }
 };
 
 const updateUser = async () => {
   const user = auth.currentUser;
   if (user) {
-    if (password.value !== confirmPassword.value) {
+    if (password.value && password.value !== confirmPassword.value) {
       errorMessage.value = 'Пароли не совпадают';
       return;
     }
 
     try {
-      await updateEmail(user, login.value);
+      if (login.value !== user.email) {
+        await updateEmail(user, login.value);
+      }
       if (password.value) {
         await updatePassword(user, password.value);
       }
@@ -84,9 +92,13 @@ const updateUser = async () => {
         phone: phone.value
       });
       errorMessage.value = 'Данные успешно обновлены';
+      console.log("User updated successfully");
     } catch (error) {
+      console.error("Error updating user: ", error);
       errorMessage.value = `Ошибка: ${error.message}`;
     }
+  } else {
+    console.error("No authenticated user found!");
   }
 };
 

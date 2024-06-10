@@ -1,4 +1,3 @@
-import store from '../store';
 import { createRouter, createWebHistory } from 'vue-router'
 import Doctors from "@/components/Doctors.vue";
 import Home from "@/components/Home.vue";
@@ -15,9 +14,10 @@ import EditData from "@/components/EditData.vue";
 import AddDoctor from "@/components/AddDoctor.vue";
 import Records from "@/components/Records.vue";
 import EditServices from "@/components/EditServices.vue";
+import stores from "../stores"
 
 const ifNotAuthenticated = (to, from, next) => {
-    if (!store.getters.isAuthenticated) {
+    if (!stores.getters.isAuthenticated) {
         next();
         return;
     }
@@ -25,12 +25,12 @@ const ifNotAuthenticated = (to, from, next) => {
 };
 
 const ifAuthenticated = (to, from, next) => {
-    if (store.getters.isAuthenticated) {
+    if (stores.getters.isAuthenticated) {
         next();
         return;
     }
-    next('/login')
-}
+    next('/login');
+};
 
 const routes = [
     {
@@ -61,12 +61,12 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: Login
+        component: Login,
     },
     {
         path: '/registration',
         name: 'registration',
-        component: Registration
+        component: Registration,
     },
     {
         path: '/modal',
@@ -77,44 +77,43 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: Profile,
-        beforeEnter: ifAuthenticated,
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/profile/my-records',
         name: 'profile/my-records',
-        component: MyRecords
-
+        component: MyRecords,
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/profile/edit',
         name: 'profile/edit',
-        component: EditData
-
+        component: EditData,
+        beforeEnter: ifAuthenticated
     },
-
     {
         path: '/admin',
         name: 'admin',
-        component: Admin
-
+        component: Admin,
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/admin/records',
         name: 'admin/records',
-        component: Records
-
+        component: Records,
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/admin/services',
         name: 'admin/services',
-        component: EditServices
-
+        component: EditServices,
+        beforeEnter: ifAuthenticated
     }
+];
 
-]
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
-})
+});
 
-export default router
+export default router;

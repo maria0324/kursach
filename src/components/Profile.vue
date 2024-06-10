@@ -59,6 +59,8 @@ const errorMessage = ref('');
 
 const router = useRouter();
 
+const userId = localStorage.getItem('userId'); // Retrieve user ID
+
 onMounted(() => {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -72,7 +74,7 @@ onMounted(() => {
       pets.value = Object.keys(petsData).map(key => ({
         id: key,
         ...petsData[key]
-      }));
+      })).filter(pet => pet.userId === userId); // Filter pets by user ID
     }
   }, (error) => {
     console.error('Ошибка при получении данных из Firebase:', error);
@@ -86,6 +88,7 @@ const addPet = async () => {
       type: type.value,
       breed: breed.value,
       gender: gender.value,
+      userId: userId // Associate pet with user ID
     };
 
     const petRef = dbRef(db, 'Pets');
@@ -97,7 +100,7 @@ const addPet = async () => {
         pets.value = Object.keys(petsData).map(key => ({
           id: key,
           ...petsData[key]
-        }));
+        })).filter(pet => pet.userId === userId); // Filter pets by user ID
       }
     });
 
@@ -123,6 +126,7 @@ const deletePet = async (id) => {
   }
 };
 </script>
+
 
 <style scoped>
 .profile-container {
