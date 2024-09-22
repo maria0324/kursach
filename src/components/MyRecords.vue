@@ -13,13 +13,37 @@
         <router-link to="/profile/edit">Редактировать данные</router-link>
       </nav>
     </header>
+    <div class="appointment-form">
+      <h2>Запись на прием</h2>
+      <form @submit.prevent="makeAppointment">
+        <input v-model="appointmentDate" type="datetime-local" placeholder="Дата и время" required>
+
+        <select v-model="selectedPet" required>
+          <option value="" disabled>Выберите питомца</option>
+          <option v-for="pet in pets" :key="pet.id" :value="pet.id">{{ pet.name }}</option>
+        </select>
+
+        <select v-model="selectedDoctor" required>
+          <option value="" disabled>Выберите врача</option>
+          <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">{{ doctor.lastname }} {{ doctor.firstname }}</option>
+        </select>
+
+        <select v-model="selectedService" required>
+          <option value="" disabled>Выберите услугу</option>
+          <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
+        </select>
+
+        <button type="submit">Записаться</button>
+      </form>
+    </div>
+
     <section class="my-records-section">
-      <div class="my-record-card-container" v-for="pet in pets" :key="pet.id">
+      <div class="my-record-card-container" v-for="record in records" :key="record.id">
         <div class="my-record-card">
-          <p>Питомец: {{ pet.name }}</p>
-          <p>Врач: {{ pet.type }}</p>
-          <p>Время: {{ pet.breed }}</p>
-          <p>Услуга:</p>
+          <p>Питомец: {{ getPetName(record.petId) }}</p>
+          <p>Врач: {{ getDoctorName(record.doctorId) }}</p>
+          <p>Время: {{ record.timestamp }}</p>
+          <p>Услуга: {{ getServiceName(record.serviceId) }}</p>
         </div>
       </div>
     </section>
@@ -27,18 +51,110 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { getDatabase, ref as dbRef, push, onValue } from 'firebase/database';
 
-const pets = ref([
-  { id: 1, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 2, name: 'Кокос', type: 'Пес', breed: 'Алабай' },
-  { id: 3, name: 'Кокос', type: 'Пес', breed: 'Алабай' }
-]);
+const db = getDatabase();
+const userId = localStorage.getItem('userId');
 
-const deletePet = (id) => {
-  pets.value = pets.value.filter(pet => pet.id !== id);
+const pets = ref([]);
+const doctors = ref([]);
+const services = ref([]);
+const records = ref([]);
+
+const selectedPet = ref('');
+const selectedDoctor = ref('');
+const selectedService = ref('');
+const appointmentDate = ref('');
+
+// Функция для загрузки питомцев
+const fetchPets = () => {
+  const petRef = dbRef(db, 'Pets');
+  onValue(petRef, (snapshot) => {
+    const petsData = snapshot.val();
+    pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
+    console.log('Питомцы:', pets.value); // Проверка, загружаются ли питомцы
+  });
+};
+
+// Функция для загрузки докторов
+const fetchDoctors = () => {
+  const doctorRef = dbRef(db, 'Doctors');
+  onValue(doctorRef, (snapshot) => {
+    const doctorsData = snapshot.val();
+    doctors.value = doctorsData ? Object.keys(doctorsData).map(key => ({ id: key, ...doctorsData[key] })) : [];
+  });
+};
+
+// Функция для загрузки услуг
+const fetchServices = () => {
+  const serviceRef = dbRef(db, 'Services');
+  onValue(serviceRef, (snapshot) => {
+    const servicesData = snapshot.val();
+    services.value = servicesData ? Object.keys(servicesData).map(key => ({ id: key, ...servicesData[key] })) : [];
+  });
+};
+
+// Функция для загрузки записей
+const fetchRecords = () => {
+  const recordRef = dbRef(db, 'Records');
+  onValue(recordRef, (snapshot) => {
+    const recordsData = snapshot.val();
+    records.value = recordsData ? Object.keys(recordsData).map(key => ({ id: key, ...recordsData[key] })).filter(record => record.userId === userId) : [];
+  });
+};
+
+// Функция для создания записи
+const makeAppointment = async () => {
+  if (!selectedPet.value || !selectedDoctor.value || !selectedService.value || !appointmentDate.value) {
+    return;
+  }
+
+  const newRecord = {
+    doctorId: selectedDoctor.value,
+    petId: selectedPet.value,
+    serviceId: selectedService.value,
+    timestamp: appointmentDate.value,
+    userId
+  };
+
+  const recordRef = dbRef(db, 'Records');
+  await push(recordRef, newRecord);
+
+  // Сброс значений формы после записи
+  selectedPet.value = '';
+  selectedDoctor.value = '';
+  selectedService.value = '';
+  appointmentDate.value = '';
+};
+
+// Загрузка данных при монтировании компонента
+onMounted(() => {
+  fetchPets();
+  fetchDoctors();
+  fetchServices();
+  fetchRecords();
+});
+
+const getPetName = (petId) => {
+  const pet = pets.value.find(p => p.id === petId);
+  return pet ? pet.name : 'Не найдено';
+};
+
+const getDoctorName = (doctorId) => {
+  const doctor = doctors.value.find(d => d.id === doctorId);
+  return doctor ? `${doctor.lastname} ${doctor.firstname}` : 'Не найдено';
+};
+
+const getServiceName = (serviceId) => {
+  const service = services.value.find(s => s.id === serviceId);
+  return service ? service.name : 'Не найдено';
 };
 </script>
+
+
+
+
 
 <style scoped>
 .profile-container {
@@ -155,6 +271,54 @@ const deletePet = (id) => {
   margin: 20px 45px;
 
 }
+.appointment-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin-top: 25px;
+  margin-right: 1495px;
+}
+
+.appointment-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.appointment-form input,
+.appointment-form select {
+  width: calc(100% - 20px);
+  margin: 10px 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.appointment-form button {
+  display: block;
+  width: calc(100% - 20px);
+  margin: 20px 10px;
+  padding: 10px;
+  background-color: #3e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.appointment-form button:hover {
+  background-color: #333;
+}
 
 
 </style>
+
+
+
+
+
+
+
+
+

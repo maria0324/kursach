@@ -22,13 +22,11 @@ const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Reactive variables
 const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
-// Login function
 const loginUser = async () => {
   try {
     const dbReference = dbRef(db);
@@ -43,7 +41,8 @@ const loginUser = async () => {
       if (user) {
         const token = btoa(`${username.value}:${password.value}`);
         localStorage.setItem('token', `Bearer ${token}`);
-        localStorage.setItem('userId', user.id); // Store user ID
+        localStorage.setItem('userId', user.id);
+        localStorage.setItem('isAuthenticated', 'true');  // Устанавливаем флаг авторизации
 
         if (user.role === '0') {
           router.push({ path: '/admin' });
@@ -64,6 +63,7 @@ const loginUser = async () => {
   }
 };
 </script>
+
 
 
 <style scoped>

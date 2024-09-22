@@ -58,8 +58,7 @@ const gender = ref('');
 const errorMessage = ref('');
 
 const router = useRouter();
-
-const userId = localStorage.getItem('userId'); // Retrieve user ID
+const userId = localStorage.getItem('userId');
 
 onMounted(() => {
   const token = localStorage.getItem('token');
@@ -70,14 +69,8 @@ onMounted(() => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
     const petsData = snapshot.val();
-    if (petsData) {
-      pets.value = Object.keys(petsData).map(key => ({
-        id: key,
-        ...petsData[key]
-      })).filter(pet => pet.userId === userId); // Filter pets by user ID
-    }
-  }, (error) => {
-    console.error('Ошибка при получении данных из Firebase:', error);
+    pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
+    console.log('Питомцы в профиле:', pets.value); // Проверка загруженных питомцев
   });
 });
 
@@ -88,44 +81,43 @@ const addPet = async () => {
       type: type.value,
       breed: breed.value,
       gender: gender.value,
-      userId: userId // Associate pet with user ID
+      userId
     };
 
     const petRef = dbRef(db, 'Pets');
     await push(petRef, newPet);
 
-    onValue(petRef, (snapshot) => {
-      const petsData = snapshot.val();
-      if (petsData) {
-        pets.value = Object.keys(petsData).map(key => ({
-          id: key,
-          ...petsData[key]
-        })).filter(pet => pet.userId === userId); // Filter pets by user ID
-      }
-    });
-
+    // Сброс значений формы
     name.value = '';
     type.value = '';
     breed.value = '';
     gender.value = '';
     errorMessage.value = '';
+
+    // Вызов обновления списка питомцев
+    fetchPets(); // Обновляем список питомцев после добавления нового
   } catch (error) {
     console.error('Ошибка при добавлении питомца:', error);
     errorMessage.value = 'Ошибка при добавлении питомца!';
   }
 };
 
+// Удаление питомца
 const deletePet = async (id) => {
-  try {
-    const petRef = dbRef(db, `Pets/${id}`);
-    await remove(petRef);
+  const petRef = dbRef(db, `Pets/${id}`);
+  await remove(petRef);
+};
 
-    pets.value = pets.value.filter(pet => pet.id !== id);
-  } catch (error) {
-    console.error('Ошибка при удалении питомца:', error);
-  }
+// Функция для обновления списка питомцев
+const fetchPets = () => {
+  const petRef = dbRef(db, 'Pets');
+  onValue(petRef, (snapshot) => {
+    const petsData = snapshot.val();
+    pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
+  });
 };
 </script>
+
 
 
 <style scoped>
@@ -182,10 +174,13 @@ const deletePet = async (id) => {
 }
 
 .form-section {
+  position: absolute;
+  top: 345px;
+  left: 100px;
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  width: 100%;
+
 }
 
 .add-pet-container {

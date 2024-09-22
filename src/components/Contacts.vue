@@ -10,7 +10,7 @@
       <h3>Пишите на почту:</h3>
       <p>bestf@mail.ru</p>
       <h3>Мы находимся по адресу:</h3>
-      <p>г. Томск, ул.Герцена 18</p>
+      <p>г. Томск, ул.Герцена 78</p>
     </div>
     <div class="contacts-map">
       <img src="../../public/img/map.png" alt="Map" />

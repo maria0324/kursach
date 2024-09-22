@@ -1,45 +1,14 @@
 <template>
   <div>
-    <div class="navbar">
-      <router-link to="/">Главная</router-link>
-      <router-link to="/doctors">Врачи</router-link>
-      <router-link to="/services">Услуги и цены</router-link>
-      <router-link to="/about">О клинике</router-link>
-      <router-link to="/contacts">Контакты</router-link>
-      <router-link to="/login">Вход</router-link>
-    </div>
+
     <div class="main-text">
-      <p>Ветеринарный <br> центр BestF</p>
+      <p>Ветеринарный <br> центр <span class="orange-text">BestF</span></p>
     </div>
     <div class="cel-text">
       <p>Наша цель: обеспечить <br> индивидуальный подход к каждому <br> пациенту, став гарантом долгой, <br> здоровой и счастливой жизни Вашего <br> питомца.</p>
     </div>
-    <div class="appointment-form">
-      <h2>Запись на прием</h2>
-      <form @submit.prevent="bookAppointment">
-        <input type="datetime-local" v-model="appointment.datetime" placeholder="Дата и время" required>
-        <select v-model="appointment.pet" required>
-          <option value="" disabled>Выберите питомца</option>
-          <!-- Populate pets options here -->
-          <option v-for="pet in pets" :key="pet.id" :value="pet.name">{{ pet.name }}</option>
-        </select>
-        <select v-model="appointment.doctor" required>
-          <option value="" disabled>Выберите врача</option>
-          <!-- Populate doctors options here -->
-          <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.name">{{ doctor.name }}</option>
-        </select>
-        <select v-model="appointment.service" required>
-          <option value="" disabled>Выберите услугу</option>
-          <!-- Populate services options here -->
-          <option v-for="service in services" :key="service.id" :value="service.name">{{ service.name }}</option>
-        </select>
-        <button type="submit">Записаться</button>
-      </form>
-    </div>
-    <div v-if="showLoginPrompt" class="login-prompt">
-      <p>Пожалуйста, войдите в систему, чтобы записаться на прием.</p>
-      <router-link to="/login">Войти</router-link>
-    </div>
+    <p class="client-message"><span class="orange-text">Уважаемые клиенты!</span><br>Запись на прием возможна после<br> авторизации в разделе "Мои записи"</p>
+
     <img class="start-dog" src="../../public/img/start-dog.png" alt="dog">
     <section class="who-services">
       <div class="wrapper">
@@ -90,69 +59,11 @@ const router = useRouter();
 const auth = getAuth();
 const db = getDatabase();
 
-// State variables for the form
-const appointment = ref({
-  datetime: '',
-  pet: '',
-  doctor: '',
-  service: ''
-});
 
-const isAuthenticated = ref(false);
-const showLoginPrompt = ref(false);
-const pets = ref([]);
-const doctors = ref([]);
-const services = ref([]);
 
-// Check if user is authenticated
-onAuthStateChanged(auth, (user) => {
-  isAuthenticated.value = !!user;
-  if (isAuthenticated.value) {
-    loadPets();
-    loadDoctors();
-    loadServices();
-  }
-});
 
-// Load pets, doctors, and services from the database
-const loadPets = () => {
-  const userId = auth.currentUser.uid;
-  const petsRef = dbRef(db, `Users/${userId}/Pets`);
-  onValue(petsRef, (snapshot) => {
-    pets.value = snapshot.val() ? Object.values(snapshot.val()) : [];
-  });
-};
 
-const loadDoctors = () => {
-  const doctorsRef = dbRef(db, 'Doctors');
-  onValue(doctorsRef, (snapshot) => {
-    doctors.value = snapshot.val() ? Object.values(snapshot.val()) : [];
-  });
-};
 
-const loadServices = () => {
-  const servicesRef = dbRef(db, 'Services');
-  onValue(servicesRef, (snapshot) => {
-    services.value = snapshot.val() ? Object.values(snapshot.val()) : [];
-  });
-};
-
-// Handle form submission
-const bookAppointment = async () => {
-  if (!isAuthenticated.value) {
-    showLoginPrompt.value = true;
-    return;
-  }
-  try {
-    const userId = auth.currentUser.uid;
-    const appointmentsRef = dbRef(db, `Users/${userId}/Appointments`);
-    await push(appointmentsRef, appointment.value);
-    alert('Запись на прием успешно создана');
-    router.push('/profile/my-records');
-  } catch (error) {
-    console.error('Ошибка при создании записи на прием:', error);
-  }
-};
 </script>
 
 
@@ -177,7 +88,7 @@ body{
   top: 171px;
   height: 905px;
   width: 900px;
-  left: 658px;
+  left: 958px;
 }
 
 .navbar {
@@ -215,16 +126,19 @@ body{
   color: white;
   font-size: 64px;
   position: absolute;
-  top: 230px;
+  top: 255px;
   left: 95px;
 }
 
-.cel-text{
+.cel-text {
   color: white;
   font-size: 32px;
   position: absolute;
-  top: 455px;
+  top: 445px;
   left: 100px;
+  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+  padding: 20px; /* Добавим отступы, чтобы текст не прилегал к краям */
+  border-radius: 30px; /* Радиус закругления углов фона */
 }
 
 .button-note button{
@@ -319,10 +233,10 @@ footer{
 .appointment-form {
   background-color: #fff;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 30px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  margin-top: 575px;
+  margin-top: 535px;
   margin-left: 100px;
 }
 
@@ -365,8 +279,17 @@ footer{
   max-width: 400px;
   margin: 20px auto;
 }
+.orange-text {
+  color: #F7941E;
+}
 
-
+.client-message {
+  color: white;
+  font-size: 32px;
+  position: absolute;
+  top: 710px; /* Подбирайте значение, чтобы располагать текст в нужном месте */
+  left: 100px;
+}
 </style>
 
 

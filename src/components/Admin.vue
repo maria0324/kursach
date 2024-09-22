@@ -177,7 +177,9 @@ const deleteDoctor = async (doctorId) => {
 }
 
 .registration-container {
-  display: flex;
+  position: absolute;
+  top: 345px;
+  left: 100px;
   flex-direction: column;
   justify-content: center;
   height: calc(100vh - 140px);
@@ -185,7 +187,7 @@ const deleteDoctor = async (doctorId) => {
   padding-bottom: 70px;
 }
 .registration-container h1 {
-  font-size: 48px;
+  font-size: 32px;
   margin-bottom: 20px;
 }
 .registration-form {
@@ -250,8 +252,12 @@ const deleteDoctor = async (doctorId) => {
 .doctor-photo:hover {
   border: 2px solid #007BFF;
 }
+.doctors-section h2 {
+  font-size: 32px; /* Устанавливаем размер заголовка в 32px */
+  margin-bottom: 20px; /* Добавляем отступ снизу */
+}
 .doctors-section {
-  margin-top: 20px;
+  margin-top: 40px;
 }
 .doctors-list {
   display: flex;

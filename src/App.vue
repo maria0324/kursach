@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app">
     <header :class="headerClass">
       <img class="logo" src="../public/img/logo.png" alt="logo">
       <div class="logo-text">
@@ -35,7 +35,7 @@
       <div class="footer-contact">
         <div class="contact-item">
           <img src="../public/img/location.svg" alt="Location Icon">
-          <p>г. Томск, ул.Герцена 18</p>
+          <p>г. Томск, ул.Герцена 78</p>
         </div>
         <div class="contact-item">
           <img src="../public/img/mail.png" alt="Email Icon">
@@ -57,12 +57,15 @@ import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    const isAuthenticated = ref(false);
+    // Читаем состояние авторизации из localStorage
+    const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
     const router = useRouter();
 
+    // Функция выхода
     const logout = () => {
       isAuthenticated.value = false;
-      router.push('/');
+      localStorage.removeItem('isAuthenticated'); // Удаляем данные авторизации
+      router.push('/');  // Перенаправляем на главную страницу
     };
 
     return {
@@ -101,12 +104,26 @@ export default {
 </script>
 
 <style>
+/* Обеспечиваем адаптацию высоты страницы в зависимости от контента */
+html, body, #app {
+  height: 100%;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+router-view {
+  flex-grow: 1;
+}
+
 body.home-background {
   background-image: url("../public/img/start-screen-gradient-background.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
-
 
 body.default-background {
   background-image: none;
@@ -127,7 +144,6 @@ body {
   background-size: cover;
 }
 
-
 .header-other {
   background-image: url("../public/img/header-screen.png");
   background-repeat: no-repeat;
@@ -137,14 +153,11 @@ body {
   height: 140px;
 }
 
-
 .logo {
   position: relative;
   top: 25px;
   left: 100px;
 }
-
-
 
 .navbar {
   position: absolute;
@@ -173,11 +186,9 @@ body {
   width: 60px;
   font-size: 20px;
   position: relative;
-  top: -40px;
+  top: -20px;
   left: 173px;
 }
-
-
 
 .button-note button {
   height: 40px;
@@ -187,8 +198,6 @@ body {
   border-radius: 30px;
   border: white;
 }
-
-
 
 .column1grid figure:not(:last-child),
 .column2grid figure:not(:last-child) {
@@ -201,13 +210,12 @@ body {
 }
 
 footer {
-  height: 300px;
-  width: 100%;
   background-image: url("../public/img/start-screen-gradient-background.png");
   background-repeat: no-repeat;
   background-size: cover;
-  position: absolute;
-  top: 1860px;
+  width: 100%;
+  padding: 50px 0; /* Убираем фиксированную высоту, добавляем отступы */
+  position: relative;
 }
 
 .footer-navbar {
