@@ -118,7 +118,7 @@ body{
   width: 60px;
   font-size: 20px;
   position: relative;
-  top: -40px;
+  top: -20px;
   left: 173px;
 }
 

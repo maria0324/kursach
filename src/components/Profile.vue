@@ -175,7 +175,7 @@ const fetchPets = () => {
 
 .form-section {
   position: absolute;
-  top: 345px;
+  top: 320px;
   left: 100px;
   display: flex;
   justify-content: center;
@@ -187,19 +187,24 @@ const fetchPets = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+
 }
 
 .add-pet-form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 380px;
+  height: 400px;
 }
 
 .add-pet-form label {
   font-size: 24px;
   margin-bottom: 20px;
   font-weight: bold;
+  margin-top: 20px;
 }
 
 .add-pet-form input {

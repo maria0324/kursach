@@ -291,7 +291,9 @@ const getServiceName = (serviceId) => {
   width: calc(100% - 20px);
   margin: 10px 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  font-size: 20px;
+  border: none;
+  border-bottom: 2px solid #ffa500;
   border-radius: 4px;
 }
 
@@ -303,7 +305,8 @@ const getServiceName = (serviceId) => {
   background-color: #3e3e3e;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 30px;
+  font-size: 20px;
   cursor: pointer;
 }
 
