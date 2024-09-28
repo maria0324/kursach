@@ -47,13 +47,11 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase, ref as dbRef, push, onValue, remove } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-// Firebase configuration
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-// State variables
 const lastname = ref('');
 const firstname = ref('');
 const patronymic = ref('');
@@ -61,7 +59,6 @@ const speciality = ref('');
 const photoInput = ref(null);
 const doctors = ref([]);
 
-// Fetch doctors from the database on component mount
 onMounted(() => {
   const doctorRef = dbRef(db, 'Doctors');
   onValue(doctorRef, (snapshot) => {
@@ -70,7 +67,6 @@ onMounted(() => {
   });
 });
 
-// Function to add a doctor
 const addDoctor = async () => {
   try {
     const photoFile = photoInput.value.files[0];
@@ -106,13 +102,11 @@ const addDoctor = async () => {
   }
 };
 
-// Function to delete a doctor
 const deleteDoctor = async (doctorId) => {
   try {
     const doctorReference = dbRef(db, `Doctors/${doctorId}`);
     await remove(doctorReference);
 
-    // Remove the doctor from the local state
     doctors.value = doctors.value.filter(doctor => doctor.id !== doctorId);
 
     alert('Врач успешно удален!');
@@ -194,6 +188,10 @@ const deleteDoctor = async (doctorId) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  height: 450px;
+  border-radius: 30px;
 }
 .registration-form label {
   font-size: 24px;
@@ -253,8 +251,8 @@ const deleteDoctor = async (doctorId) => {
   border: 2px solid #007BFF;
 }
 .doctors-section h2 {
-  font-size: 32px; /* Устанавливаем размер заголовка в 32px */
-  margin-bottom: 20px; /* Добавляем отступ снизу */
+  font-size: 32px;
+  margin-bottom: 20px;
 }
 .doctors-section {
   margin-top: 40px;

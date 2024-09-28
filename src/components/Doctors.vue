@@ -32,14 +32,11 @@ onMounted(() => {
   onValue(doctorRef, (snapshot) => {
     const data = snapshot.val();
     doctors.value = data ? Object.keys(data).map(key => ({id: key, ...data[key]})) : [];
-    // Update specialities list
     specialities.value = Array.from(new Set(doctors.value.map(doctor => doctor.speciality)));
-    // Set filteredDoctors initially
     filteredDoctors.value = doctors.value;
   });
 });
 
-// Filtering doctors based on selected speciality
 const filteredDoctors = ref([]);
 
 watch([selectedSpeciality, doctors], () => {

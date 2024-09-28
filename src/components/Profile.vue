@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>Имя Фамилия</h3>
+          <h3>{{ userFullName }}</h3>
         </div>
       </div>
       <nav class="profile-nav">
@@ -56,6 +56,7 @@ const type = ref('');
 const breed = ref('');
 const gender = ref('');
 const errorMessage = ref('');
+const userFullName = ref('');
 
 const router = useRouter();
 const userId = localStorage.getItem('userId');
@@ -66,11 +67,18 @@ onMounted(() => {
     router.push('/login');
   }
 
+  const userRef = dbRef(db, 'Users/' + userId);
+  onValue(userRef, (snapshot) => {
+    const userData = snapshot.val();
+    if (userData) {
+      userFullName.value = `${userData.firstName} ${userData.lastName}`;
+    }
+  });
+
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
     const petsData = snapshot.val();
     pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
-    console.log('Питомцы в профиле:', pets.value); // Проверка загруженных питомцев
   });
 });
 
@@ -87,28 +95,24 @@ const addPet = async () => {
     const petRef = dbRef(db, 'Pets');
     await push(petRef, newPet);
 
-    // Сброс значений формы
     name.value = '';
     type.value = '';
     breed.value = '';
     gender.value = '';
     errorMessage.value = '';
 
-    // Вызов обновления списка питомцев
-    fetchPets(); // Обновляем список питомцев после добавления нового
+    fetchPets();
   } catch (error) {
     console.error('Ошибка при добавлении питомца:', error);
     errorMessage.value = 'Ошибка при добавлении питомца!';
   }
 };
 
-// Удаление питомца
 const deletePet = async (id) => {
   const petRef = dbRef(db, `Pets/${id}`);
   await remove(petRef);
 };
 
-// Функция для обновления списка питомцев
 const fetchPets = () => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
@@ -117,7 +121,6 @@ const fetchPets = () => {
   });
 };
 </script>
-
 
 
 <style scoped>
@@ -237,6 +240,7 @@ const fetchPets = () => {
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
+  margin-right: 630px;
   width: 100%;
 }
 

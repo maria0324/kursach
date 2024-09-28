@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>Имя Фамилия</h3>
+          <h3>{{ userFullName }}</h3>
         </div>
       </div>
       <nav class="profile-nav">
@@ -62,22 +62,36 @@ const doctors = ref([]);
 const services = ref([]);
 const records = ref([]);
 
+const userFullName = ref(''); // Добавляем переменную для хранения полного имени пользователя
 const selectedPet = ref('');
 const selectedDoctor = ref('');
 const selectedService = ref('');
 const appointmentDate = ref('');
 
-// Функция для загрузки питомцев
+onMounted(() => {
+  // Получение имени и фамилии пользователя
+  const userRef = dbRef(db, 'Users/' + userId);
+  onValue(userRef, (snapshot) => {
+    const userData = snapshot.val();
+    if (userData) {
+      userFullName.value = `${userData.firstName} ${userData.lastName}`;
+    }
+  });
+
+  fetchPets();
+  fetchDoctors();
+  fetchServices();
+  fetchRecords();
+});
+
 const fetchPets = () => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
     const petsData = snapshot.val();
     pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
-    console.log('Питомцы:', pets.value); // Проверка, загружаются ли питомцы
   });
 };
 
-// Функция для загрузки докторов
 const fetchDoctors = () => {
   const doctorRef = dbRef(db, 'Doctors');
   onValue(doctorRef, (snapshot) => {
@@ -86,7 +100,6 @@ const fetchDoctors = () => {
   });
 };
 
-// Функция для загрузки услуг
 const fetchServices = () => {
   const serviceRef = dbRef(db, 'Services');
   onValue(serviceRef, (snapshot) => {
@@ -95,7 +108,6 @@ const fetchServices = () => {
   });
 };
 
-// Функция для загрузки записей
 const fetchRecords = () => {
   const recordRef = dbRef(db, 'Records');
   onValue(recordRef, (snapshot) => {
@@ -104,7 +116,6 @@ const fetchRecords = () => {
   });
 };
 
-// Функция для создания записи
 const makeAppointment = async () => {
   if (!selectedPet.value || !selectedDoctor.value || !selectedService.value || !appointmentDate.value) {
     return;
@@ -121,20 +132,11 @@ const makeAppointment = async () => {
   const recordRef = dbRef(db, 'Records');
   await push(recordRef, newRecord);
 
-  // Сброс значений формы после записи
   selectedPet.value = '';
   selectedDoctor.value = '';
   selectedService.value = '';
   appointmentDate.value = '';
 };
-
-// Загрузка данных при монтировании компонента
-onMounted(() => {
-  fetchPets();
-  fetchDoctors();
-  fetchServices();
-  fetchRecords();
-});
 
 const getPetName = (petId) => {
   const pet = pets.value.find(p => p.id === petId);
@@ -152,10 +154,6 @@ const getServiceName = (serviceId) => {
 };
 </script>
 
-
-
-
-
 <style scoped>
 .profile-container {
   display: flex;
@@ -167,15 +165,13 @@ const getServiceName = (serviceId) => {
   overflow-x: hidden;
 }
 
-
-
 .profile-header {
   display: flex;
   align-items: center;
   width: 100%;
   padding: 20px;
   background-color: #f8f8f8;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
 }
 
@@ -212,10 +208,11 @@ const getServiceName = (serviceId) => {
 }
 
 .my-records-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-left: 470px;
+  margin-top: -400px;
 }
 
 .my-record-card {
@@ -224,31 +221,12 @@ const getServiceName = (serviceId) => {
   border-radius: 10px;
   padding: 15px;
   margin: 10px;
-  width: 350px;
-  text-align: left;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-
-.my-record-card-container {
-  display: flex;
-  justify-content: center;
-}
-
-
-.my-record-card {
-  background-color: #F5F5F5;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px;
-  width: 450px;
+  width: 400px;
   height: 170px;
   text-align: left;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
 }
-
 
 .my-record-card button {
   background-color: #FF8C00;
@@ -265,12 +243,10 @@ const getServiceName = (serviceId) => {
   transform: translateX(-50%);
 }
 
-
-
 .my-record-card p {
   margin: 20px 45px;
-
 }
+
 .appointment-form {
   background-color: #fff;
   padding: 20px;
@@ -300,28 +276,23 @@ const getServiceName = (serviceId) => {
 .appointment-form button {
   display: block;
   width: calc(100% - 20px);
-  margin: 20px 10px;
+  margin: 0px 10px;
   padding: 10px;
-  background-color: #3e3e3e;
-  color: #fff;
+  background-color: #FF8C00;
+  color: white;
+  font-size: 20px;
   border: none;
   border-radius: 30px;
-  font-size: 20px;
   cursor: pointer;
 }
 
 .appointment-form button:hover {
-  background-color: #333;
+  background-color: #ffa500;
+
 }
 
-
+.appointment-form input:focus,
+.appointment-form select:focus {
+  outline: none;
+}
 </style>
-
-
-
-
-
-
-
-
-

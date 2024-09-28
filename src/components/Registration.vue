@@ -39,8 +39,30 @@ const phone = ref('');
 const errorMessage = ref('');
 
 const registerUser = () => {
+  // Проверка логина
+  const loginRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{5,}$/;
+  if (!loginRegex.test(login.value)) {
+    errorMessage.value = 'Логин должен содержать заглавную букву, цифру и быть не короче 5 символов';
+    return;
+  }
+
+  // Проверка пароля (только латинские буквы)
+  const passwordRegex = /^[A-Za-z]+$/;
+  if (!passwordRegex.test(password.value)) {
+    errorMessage.value = 'Пароль должен содержать только латинские буквы';
+    return;
+  }
+
+  // Проверка совпадения паролей
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Пароли не совпадают';
+    return;
+  }
+
+  // Проверка номера телефона (только цифры)
+  const phoneRegex = /^\d+$/;
+  if (!phoneRegex.test(phone.value)) {
+    errorMessage.value = 'Номер телефона должен содержать только цифры';
     return;
   }
 
@@ -84,19 +106,23 @@ const registerUser = () => {
   text-align: center;
   padding-bottom: 70px;
 }
+
 .registration-container h1 {
   font-size: 48px;
   margin-bottom: 20px;
 }
+
 .registration-form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .registration-form label {
   font-size: 24px;
   margin-bottom: 5px;
 }
+
 .registration-form input {
   width: 300px;
   padding: 10px;
@@ -105,6 +131,7 @@ const registerUser = () => {
   border: none;
   border-bottom: 2px solid #ffa500;
 }
+
 .registration-form button {
   width: 300px;
   padding: 10px;
@@ -115,6 +142,7 @@ const registerUser = () => {
   border-radius: 30px;
   cursor: pointer;
 }
+
 .error-message {
   color: red;
   font-size: 18px;

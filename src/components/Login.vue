@@ -17,7 +17,6 @@ import { useRouter } from 'vue-router';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref as dbRef, get, child } from 'firebase/database';
 
-// Firebase configuration
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -42,7 +41,7 @@ const loginUser = async () => {
         const token = btoa(`${username.value}:${password.value}`);
         localStorage.setItem('token', `Bearer ${token}`);
         localStorage.setItem('userId', user.id);
-        localStorage.setItem('isAuthenticated', 'true');  // Устанавливаем флаг авторизации
+        localStorage.setItem('isAuthenticated', 'true');
 
         if (user.role === '0') {
           router.push({ path: '/admin' });
@@ -63,8 +62,6 @@ const loginUser = async () => {
   }
 };
 </script>
-
-
 
 <style scoped>
 .login-container {

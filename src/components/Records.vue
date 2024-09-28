@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="profile-container">
     <header class="profile-header">
@@ -18,21 +14,138 @@
       </nav>
     </header>
   </div>
+
+  <!-- Добавим выбор даты -->
+  <div class="filter-section">
+    <label for="dateFilter">Выберите дату:</label>
+    <input type="date" v-model="selectedDate" @change="filterRecordsByDate">
+  </div>
+
   <section class="records-section">
-    <div class="record-card-container"  >
+    <div
+        v-for="record in filteredRecords"
+        :key="record.id"
+        class="record-card-container"
+        :class="{ 'past-record': isPast(record.timestamp) }"
+    >
       <div class="record-card">
-        <p>Питомец: </p>
-        <p>Вид: </p>
-        <p>Порода: </p>
-        <p>Врач: </p>
-        <p>Владелец: </p>
-        <p>Номер владелеца: </p>
-        <p>Дата и время:</p>
-        <p>Услуга:</p>
+        <p>Питомец: {{ getPetInfo(record.petId).name }}</p>
+        <p>Вид: {{ getPetInfo(record.petId).type }}</p>
+        <p>Порода: {{ getPetInfo(record.petId).breed }}</p>
+        <p>Врач: {{ getDoctorName(record.doctorId) }}</p>
+        <p>Владелец: {{ getOwnerInfo(getPetInfo(record.petId).ownerId).fullname }}</p>
+        <p>Номер владельца: {{ getOwnerInfo(getPetInfo(record.petId).ownerId).phone }}</p>
+        <p>Дата и время: {{ record.timestamp }}</p>
+        <p>Услуга: {{ getServiceName(record.serviceId) }}</p>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { getDatabase, ref as dbRef, onValue } from 'firebase/database';
+
+const db = getDatabase();
+const records = ref([]);
+const filteredRecords = ref([]);
+const pets = ref([]);
+const doctors = ref([]);
+const services = ref([]);
+const users = ref([]);
+const selectedDate = ref(null);
+
+// Получение данных с Firebase
+const fetchRecords = () => {
+  const recordRef = dbRef(db, 'Records');
+  onValue(recordRef, (snapshot) => {
+    const recordsData = snapshot.val();
+    records.value = recordsData ? Object.keys(recordsData).map(key => ({ id: key, ...recordsData[key] })) : [];
+    filteredRecords.value = records.value;
+  });
+};
+
+// Функция для фильтрации записей по выбранной дате
+const filterRecordsByDate = () => {
+  if (!selectedDate.value) {
+    filteredRecords.value = records.value;
+    return;
+  }
+
+  const selectedDateStr = new Date(selectedDate.value).toDateString();
+  filteredRecords.value = records.value.filter(record => {
+    const recordDateStr = new Date(record.timestamp).toDateString();
+    return recordDateStr === selectedDateStr;
+  });
+};
+
+// Функция для проверки, является ли запись прошедшей
+const isPast = (timestamp) => {
+  return new Date(timestamp) < new Date();
+};
+
+// Остальные функции для получения данных о питомцах, врачах, услугах, пользователях
+const fetchPets = () => {
+  const petRef = dbRef(db, 'Pets');
+  onValue(petRef, (snapshot) => {
+    const petsData = snapshot.val();
+    pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })) : [];
+  });
+};
+
+const fetchDoctors = () => {
+  const doctorRef = dbRef(db, 'Doctors');
+  onValue(doctorRef, (snapshot) => {
+    const doctorsData = snapshot.val();
+    doctors.value = doctorsData ? Object.keys(doctorsData).map(key => ({ id: key, ...doctorsData[key] })) : [];
+  });
+};
+
+const fetchServices = () => {
+  const serviceRef = dbRef(db, 'Services');
+  onValue(serviceRef, (snapshot) => {
+    const servicesData = snapshot.val();
+    services.value = servicesData ? Object.keys(servicesData).map(key => ({ id: key, ...servicesData[key] })) : [];
+  });
+};
+
+const fetchUsers = () => {
+  const userRef = dbRef(db, 'Users');
+  onValue(userRef, (snapshot) => {
+    const usersData = snapshot.val();
+    users.value = usersData ? Object.keys(usersData).map(key => ({ id: key, ...usersData[key] })) : [];
+  });
+};
+
+onMounted(() => {
+  fetchRecords();
+  fetchPets();
+  fetchDoctors();
+  fetchServices();
+  fetchUsers();
+});
+
+const getPetInfo = (petId) => {
+  const pet = pets.value.find(p => p.id === petId);
+  return pet ? { name: pet.name, breed: pet.breed, type: pet.type, ownerId: pet.userId } : { name: 'Не найдено', breed: '', type: '', ownerId: '' };
+};
+
+const getDoctorName = (doctorId) => {
+  const doctor = doctors.value.find(d => d.id === doctorId);
+  return doctor ? `${doctor.lastname} ${doctor.firstname}` : 'Не найдено';
+};
+
+const getServiceName = (serviceId) => {
+  const service = services.value.find(s => s.id === serviceId);
+  return service ? service.name : 'Не найдено';
+};
+
+const getOwnerInfo = (ownerId) => {
+  const owner = users.value.find(u => u.id === ownerId);
+  return owner ? { fullname: `${owner.firstName} ${owner.lastName}`, phone: owner.phoneNumber } : { fullname: 'Не найдено', phone: '' };
+};
+
+</script>
 
 <style scoped>
 .profile-container {
@@ -87,6 +200,7 @@
   justify-content: center;
   margin-top: 20px;
 }
+
 .record-card {
   background-color: #F5F5F5;
   border: 1px solid #E0E0E0;
@@ -98,7 +212,19 @@
   text-align: left;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
+  transition: opacity 0.3s ease;
 }
+
+.past-record .record-card {
+  opacity: 0.5; /* Прозрачность для прошедших записей */
+}
+
+.filter-section {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
 .record-card button {
   background-color: #FF8C00;
   font-size: 16px;
@@ -113,9 +239,26 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
 .record-card p {
   margin: 20px 45px;
 }
+
+.filter-section input {
+  width: 150px;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  border: none;
+  border-bottom: 2px solid #ffa500;
+}
+
+.filter-section label {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
 .error-message {
   color: red;
   font-size: 18px;

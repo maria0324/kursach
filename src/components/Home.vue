@@ -48,7 +48,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -58,14 +57,7 @@ import { getDatabase, ref as dbRef, onValue, push } from 'firebase/database';
 const router = useRouter();
 const auth = getAuth();
 const db = getDatabase();
-
-
-
-
-
-
 </script>
-
 
 <style>
 
@@ -136,9 +128,9 @@ body{
   position: absolute;
   top: 445px;
   left: 100px;
-  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
-  padding: 20px; /* Добавим отступы, чтобы текст не прилегал к краям */
-  border-radius: 30px; /* Радиус закругления углов фона */
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 30px;
 }
 
 .button-note button{
@@ -287,7 +279,7 @@ footer{
   color: white;
   font-size: 32px;
   position: absolute;
-  top: 710px; /* Подбирайте значение, чтобы располагать текст в нужном месте */
+  top: 710px;
   left: 100px;
 }
 </style>

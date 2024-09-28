@@ -20,7 +20,6 @@ import { ref, onMounted } from 'vue';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref as dbRef, get } from 'firebase/database';
 
-// Initialize Firebase
 const firebaseConfig = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG || '{}');
 
 if (!firebaseConfig.apiKey) {

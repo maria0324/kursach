@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>{{ firstName }} {{ lastName }}</h3>
+          <h3>{{ userFullName }}</h3> <!-- Отображаем полное имя пользователя -->
         </div>
       </div>
       <nav class="profile-nav">
@@ -46,6 +46,9 @@ const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
 
+const userFullName = ref(''); // Переменная для полного имени пользователя
+
+// Функция для получения данных пользователя и имени
 const fetchUserData = async () => {
   const user = auth.currentUser;
   if (user) {
@@ -59,6 +62,7 @@ const fetchUserData = async () => {
       lastName.value = userData.lastName || '';
       patronymic.value = userData.patronymic || '';
       phone.value = userData.phone || '';
+      userFullName.value = `${userData.firstName} ${userData.lastName}`; // Обновляем полное имя
     } else {
       console.error("No such document!");
     }
@@ -67,6 +71,7 @@ const fetchUserData = async () => {
   }
 };
 
+// Функция для обновления данных пользователя
 const updateUser = async () => {
   const user = auth.currentUser;
   if (user) {
@@ -158,58 +163,6 @@ onMounted(fetchUserData);
   font-size: 20px;
 }
 
-.form-section {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  width: 100%;
-}
-
-.add-pet-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.add-pet-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.add-pet-form label {
-  font-size: 24px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-.add-pet-form input {
-  width: 300px;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 20px;
-  border: none;
-  border-bottom: 2px solid #ffa500;
-}
-
-.add-pet-form button {
-  width: 300px;
-  padding: 10px;
-  font-size: 24px;
-  background-color: #3e3e3e;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-}
-
-.error-message {
-  color: red;
-  font-size: 18px;
-}
-
-
 .edit-container {
   display: flex;
   flex-direction: column;
@@ -223,10 +176,6 @@ onMounted(fetchUserData);
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.edit-form label {
-  font-size: 24px;
-  margin-bottom: 5px;
 }
 .edit-form input {
   width: 300px;

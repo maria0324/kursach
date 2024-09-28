@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <div class="contacts-container">
     <h1>Контакты клиники</h1>
@@ -17,6 +14,9 @@
     </div>
   </div>
 </template>
+
+<script setup>
+</script>
 
 <style scoped>
 .contacts-container {

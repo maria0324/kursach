@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="about-container">
     <h1 class="title-about">О клинике BestF</h1>
@@ -18,6 +14,7 @@
         <img src="../../public/img/vet-clinic3.jpg" alt="Clinic Image 1">
         <img src="../../public/img/vet-clinic2.jpg" alt="Clinic Image 2">
         <img src="../../public/img/vet-clinic1.jpg" alt="Clinic Image 3">
+        <img src="../../public/img/vet-clinic4.jpg" alt="Clinic Image 4">
       </div>
     </div>
     <h2 class="rules-title">Правила клиники</h2>
@@ -54,7 +51,9 @@
   </div>
 </template>
 
+<script setup>
 
+</script>
 
 <style scoped>
 .about-container {
@@ -88,29 +87,21 @@
 
 .about-images {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .about-images img {
-  margin-bottom: 20px;
+  width: 400px; /* Устанавливаем одинаковую ширину для всех изображений */
+  height: 300px; /* Устанавливаем одинаковую высоту для всех изображений */
+  object-fit: cover; /* Чтобы изображение сохраняло пропорции */
+  margin-right: 75px; /* Задаем отступ между изображениями 40px */
 }
 
-.about-images img:nth-child(1),
-.about-images img:nth-child(2) {
-  width: 300px;
-  height: 230px;
-  margin-right: 20px;
+.about-images img:last-child {
+  margin-right: 0; /* Убираем отступ у последнего изображения */
 }
 
-.about-images img:nth-child(2) {
-  margin-right: 0;
-}
-
-.about-images img:nth-child(3) {
-  width: 620px;
-  height: 280px;
-}
 
 .rules-title {
   font-size: 48px;
