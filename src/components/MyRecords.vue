@@ -16,7 +16,7 @@
     <div class="appointment-form">
       <h2>Запись на прием</h2>
       <form @submit.prevent="makeAppointment">
-        <input v-model="appointmentDate" type="datetime-local" placeholder="Дата и время" required>
+        <input v-model="appointmentDate" type="datetime-local" placeholder="Дата и время" required :min="minDateTime">
 
         <select v-model="selectedPet" required>
           <option value="" disabled>Выберите питомца</option>
@@ -32,6 +32,8 @@
           <option value="" disabled>Выберите услугу</option>
           <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
         </select>
+
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <button type="submit">Записаться</button>
       </form>
@@ -61,15 +63,16 @@ const pets = ref([]);
 const doctors = ref([]);
 const services = ref([]);
 const records = ref([]);
-
-const userFullName = ref(''); // Добавляем переменную для хранения полного имени пользователя
+const userFullName = ref('');
 const selectedPet = ref('');
 const selectedDoctor = ref('');
 const selectedService = ref('');
 const appointmentDate = ref('');
+const errorMessage = ref('');
+
+const minDateTime = new Date().toISOString().slice(0, 16);
 
 onMounted(() => {
-  // Получение имени и фамилии пользователя
   const userRef = dbRef(db, 'Users/' + userId);
   onValue(userRef, (snapshot) => {
     const userData = snapshot.val();
@@ -112,12 +115,29 @@ const fetchRecords = () => {
   const recordRef = dbRef(db, 'Records');
   onValue(recordRef, (snapshot) => {
     const recordsData = snapshot.val();
-    records.value = recordsData ? Object.keys(recordsData).map(key => ({ id: key, ...recordsData[key] })).filter(record => record.userId === userId) : [];
+    records.value = recordsData ? Object.keys(recordsData).map(key => ({ id: key, ...recordsData[key] })) : [];
   });
 };
 
+const isTimeSlotAvailable = (timestamp) => {
+  return !records.value.some(record => new Date(record.timestamp).toISOString() === new Date(timestamp).toISOString());
+};
+
 const makeAppointment = async () => {
+  errorMessage.value = '';
+
+  if (new Date(appointmentDate.value) < new Date()) {
+    errorMessage.value = 'Вы не можете записаться на прошедшую дату.';
+    return;
+  }
+
+  if (!isTimeSlotAvailable(appointmentDate.value)) {
+    errorMessage.value = 'На выбранное время уже есть запись.';
+    return;
+  }
+
   if (!selectedPet.value || !selectedDoctor.value || !selectedService.value || !appointmentDate.value) {
+    errorMessage.value = 'Пожалуйста, заполните все поля.';
     return;
   }
 
@@ -136,6 +156,7 @@ const makeAppointment = async () => {
   selectedDoctor.value = '';
   selectedService.value = '';
   appointmentDate.value = '';
+  errorMessage.value = 'Запись успешно создана!';
 };
 
 const getPetName = (petId) => {
@@ -162,7 +183,6 @@ const getServiceName = (serviceId) => {
   text-align: center;
   margin-top: 20px;
   width: 100%;
-  overflow-x: hidden;
 }
 
 .profile-header {
@@ -228,21 +248,6 @@ const getServiceName = (serviceId) => {
   position: relative;
 }
 
-.my-record-card button {
-  background-color: #FF8C00;
-  font-size: 16px;
-  color: white;
-  width: 200px;
-  border: none;
-  padding: 10px;
-  border-radius: 30px;
-  cursor: pointer;
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .my-record-card p {
   margin: 20px 45px;
 }
@@ -286,13 +291,8 @@ const getServiceName = (serviceId) => {
   cursor: pointer;
 }
 
-.appointment-form button:hover {
-  background-color: #ffa500;
-
-}
-
-.appointment-form input:focus,
-.appointment-form select:focus {
-  outline: none;
+.error-message {
+  color: red;
+  margin: 10px;
 }
 </style>

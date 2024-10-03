@@ -155,7 +155,7 @@ const getOwnerInfo = (ownerId) => {
   text-align: center;
   margin-top: 20px;
   width: 100%;
-  overflow-x: hidden;
+
 }
 
 .profile-header {

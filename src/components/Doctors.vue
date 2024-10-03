@@ -52,6 +52,7 @@ watch([selectedSpeciality, doctors], () => {
 .doctors-container {
   text-align: center;
   padding: 50px 20px;
+  min-height: 100%; /* Гарантируем, что контейнер будет адаптироваться по контенту */
 }
 
 .title-doctor {

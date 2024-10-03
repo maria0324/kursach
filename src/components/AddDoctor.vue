@@ -86,6 +86,9 @@ const addDoctor = async () => {
       photo: photoURL
     };
 
+    // Логирование значения speciality перед отправкой в Firebase
+    console.log('Speciality:', speciality.value);
+
     const doctorReference = dbRef(db, 'Doctors');
     await push(doctorReference, newDoctor);
 
@@ -101,6 +104,7 @@ const addDoctor = async () => {
     alert('Ошибка при добавлении врача. Пожалуйста, попробуйте еще раз.');
   }
 };
+
 
 const deleteDoctor = async (doctorId) => {
   try {

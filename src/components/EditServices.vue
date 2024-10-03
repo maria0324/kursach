@@ -109,6 +109,7 @@ onMounted(() => {
 <style scoped>
 .service-container {
   text-align: center;
+  margin-top: 150px;
 }
 
 .service-form {

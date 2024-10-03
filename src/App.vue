@@ -57,15 +57,13 @@ import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    // Читаем состояние авторизации из localStorage
     const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
     const router = useRouter();
 
-    // Функция выхода
     const logout = () => {
       isAuthenticated.value = false;
-      localStorage.removeItem('isAuthenticated'); // Удаляем данные авторизации
-      router.push('/');  // Перенаправляем на главную страницу
+      localStorage.removeItem('isAuthenticated');
+      router.push('/');
     };
 
     return {
@@ -104,9 +102,11 @@ export default {
 </script>
 
 <style>
-/* Обеспечиваем адаптацию высоты страницы в зависимости от контента */
 html, body, #app {
-  height: 100%;
+  height: auto; /* Изменяем фиксированную высоту */
+  min-height: 100vh; /* Гарантируем минимум 100% высоты */
+  display: flex;
+  flex-direction: column;
 }
 
 #app {
@@ -116,7 +116,7 @@ html, body, #app {
 }
 
 router-view {
-  flex-grow: 1;
+  flex-grow: 1; /* Контент заполняет пространство между хедером и футером */
 }
 
 body.home-background {
@@ -188,34 +188,6 @@ body {
   position: relative;
   top: -20px;
   left: 173px;
-}
-
-.button-note button {
-  height: 40px;
-  width: 330px;
-  background-color: white;
-  font-size: 24px;
-  border-radius: 30px;
-  border: white;
-}
-
-.column1grid figure:not(:last-child),
-.column2grid figure:not(:last-child) {
-  margin-right: 95px;
-}
-
-.wrapper figcaption {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-footer {
-  background-image: url("../public/img/start-screen-gradient-background.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  padding: 50px 0; /* Убираем фиксированную высоту, добавляем отступы */
-  position: relative;
 }
 
 .footer-navbar {

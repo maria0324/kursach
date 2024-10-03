@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>{{ userFullName }}</h3> <!-- Отображаем полное имя пользователя -->
+          <h3>{{ userFullName }}</h3> <!-- Добавляем отображение полного имени -->
         </div>
       </div>
       <nav class="profile-nav">
@@ -14,13 +14,11 @@
       </nav>
     </header>
     <div class="edit-container">
+      <h2>Редактирование данных</h2>
       <form class="edit-form" @submit.prevent="updateUser">
         <input v-model="login" type="text" id="login" placeholder="Логин" name="login" required />
         <input v-model="password" type="password" id="password" placeholder="Пароль" name="password" />
         <input v-model="confirmPassword" type="password" id="confirm-password" placeholder="Подтвердите пароль" name="confirm-password" />
-        <input v-model="firstName" type="text" id="first-name" placeholder="Имя" name="first-name" required />
-        <input v-model="lastName" type="text" id="last-name" placeholder="Фамилия" name="last-name" required />
-        <input v-model="patronymic" type="text" id="patronymic" placeholder="Отчество" name="patronymic" />
         <input v-model="phone" type="text" id="phone" placeholder="Номер телефона" name="phone" required />
         <button type="submit">Сохранить</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -28,6 +26,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -45,10 +44,10 @@ const lastName = ref('');
 const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
+const userFullName = ref('');
 
-const userFullName = ref(''); // Переменная для полного имени пользователя
 
-// Функция для получения данных пользователя и имени
+
 const fetchUserData = async () => {
   const user = auth.currentUser;
   if (user) {
@@ -71,7 +70,6 @@ const fetchUserData = async () => {
   }
 };
 
-// Функция для обновления данных пользователя
 const updateUser = async () => {
   const user = auth.currentUser;
   if (user) {
@@ -166,7 +164,7 @@ onMounted(fetchUserData);
 .edit-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  margin-top: 150px;
   height: calc(100vh - 140px);
   text-align: center;
   padding-bottom: 70px;
@@ -198,5 +196,8 @@ onMounted(fetchUserData);
 .error-message {
   color: red;
   font-size: 18px;
+}
+h2{
+  margin-bottom: 30px;
 }
 </style>
