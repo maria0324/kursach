@@ -17,6 +17,7 @@
 
 <script setup>
 import { ref } from 'vue';
+
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref as dbRef, set } from "firebase/database";
 
@@ -112,8 +113,10 @@ const registerUser = () => {
   align-items: center;
 }
 
+
 .registration-form label {
   font-size: 24px;
+
   margin-bottom: 5px;
 }
 
