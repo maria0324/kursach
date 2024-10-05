@@ -73,11 +73,9 @@ const addDoctor = async () => {
     if (!photoFile) {
       throw new Error('Файл фотографии не выбран');
     }
-
     const storageReference = storageRef(storage, `doctorPhotos/${photoFile.name}`);
     await uploadBytes(storageReference, photoFile);
     const photoURL = await getDownloadURL(storageReference);
-
     const newDoctor = {
       lastname: lastname.value,
       firstname: firstname.value,
@@ -85,7 +83,6 @@ const addDoctor = async () => {
       speciality: speciality.value,
       photo: photoURL
     };
-
     const doctorReference = dbRef(db, 'Doctors');
     await push(doctorReference, newDoctor);
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="main-text">
       <p>Ветеринарный <br> центр <span class="orange-text">BestF</span></p>
     </div>
@@ -8,7 +7,6 @@
       <p>Наша цель: обеспечить <br> индивидуальный подход к каждому <br> пациенту, став гарантом долгой, <br> здоровой и счастливой жизни Вашего <br> питомца.</p>
     </div>
     <p class="client-message"><span class="orange-text">Уважаемые клиенты!</span><br>Запись на прием возможна после<br> авторизации в разделе "Мои записи"</p>
-
     <img class="start-dog" src="../../public/img/start-dog.png" alt="dog">
     <section class="who-services">
       <div class="wrapper">

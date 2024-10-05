@@ -66,7 +66,6 @@ onMounted(() => {
   if (!token) {
     router.push('/login');
   }
-
   const userRef = dbRef(db, 'Users/' + userId);
   onValue(userRef, (snapshot) => {
     const userData = snapshot.val();
@@ -74,7 +73,6 @@ onMounted(() => {
       userFullName.value = `${userData.firstName} ${userData.lastName}`;
     }
   });
-
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
     const petsData = snapshot.val();
@@ -91,7 +89,6 @@ const addPet = async () => {
       gender: gender.value,
       userId
     };
-
     const petRef = dbRef(db, 'Pets');
     await push(petRef, newPet);
 
@@ -107,12 +104,10 @@ const addPet = async () => {
     errorMessage.value = 'Ошибка при добавлении питомца!';
   }
 };
-
 const deletePet = async (id) => {
   const petRef = dbRef(db, `Pets/${id}`);
   await remove(petRef);
 };
-
 const fetchPets = () => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {

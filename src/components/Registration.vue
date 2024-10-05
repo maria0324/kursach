@@ -39,27 +39,21 @@ const phone = ref('');
 const errorMessage = ref('');
 
 const registerUser = () => {
-  // Проверка логина
   const loginRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{5,}$/;
   if (!loginRegex.test(login.value)) {
     errorMessage.value = 'Логин должен содержать заглавную букву, цифру и быть не короче 5 символов';
     return;
   }
 
-  // Проверка пароля (только латинские буквы)
   const passwordRegex = /^[A-Za-z]+$/;
   if (!passwordRegex.test(password.value)) {
     errorMessage.value = 'Пароль должен содержать только латинские буквы';
     return;
   }
-
-  // Проверка совпадения паролей
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Пароли не совпадают';
     return;
   }
-
-  // Проверка номера телефона (только цифры)
   const phoneRegex = /^\d+$/;
   if (!phoneRegex.test(phone.value)) {
     errorMessage.value = 'Номер телефона должен содержать только цифры';
@@ -74,7 +68,7 @@ const registerUser = () => {
     login: login.value,
     password: password.value,
     phoneNumber: phone.value,
-    role: '1'  // Устанавливаем значение роли по умолчанию
+    role: '1'
   };
 
   const userRef = dbRef(db, 'Users/' + newUser.id);

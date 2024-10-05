@@ -14,13 +14,10 @@
       </nav>
     </header>
   </div>
-
-  <!-- Добавим выбор даты -->
   <div class="filter-section">
     <label for="dateFilter">Выберите дату:</label>
     <input type="date" v-model="selectedDate" @change="filterRecordsByDate">
   </div>
-
   <section class="records-section">
     <div
         v-for="record in filteredRecords"
@@ -55,7 +52,6 @@ const services = ref([]);
 const users = ref([]);
 const selectedDate = ref(null);
 
-// Получение данных с Firebase
 const fetchRecords = () => {
   const recordRef = dbRef(db, 'Records');
   onValue(recordRef, (snapshot) => {
@@ -65,7 +61,6 @@ const fetchRecords = () => {
   });
 };
 
-// Функция для фильтрации записей по выбранной дате
 const filterRecordsByDate = () => {
   if (!selectedDate.value) {
     filteredRecords.value = records.value;
@@ -79,12 +74,12 @@ const filterRecordsByDate = () => {
   });
 };
 
-// Функция для проверки, является ли запись прошедшей
+
 const isPast = (timestamp) => {
   return new Date(timestamp) < new Date();
 };
 
-// Остальные функции для получения данных о питомцах, врачах, услугах, пользователях
+
 const fetchPets = () => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {

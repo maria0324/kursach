@@ -17,28 +17,22 @@
       <h2>Запись на прием</h2>
       <form @submit.prevent="makeAppointment">
         <input v-model="appointmentDate" type="datetime-local" placeholder="Дата и время" required :min="minDateTime">
-
         <select v-model="selectedPet" required>
           <option value="" disabled>Выберите питомца</option>
           <option v-for="pet in pets" :key="pet.id" :value="pet.id">{{ pet.name }}</option>
         </select>
-
         <select v-model="selectedDoctor" required>
           <option value="" disabled>Выберите врача</option>
           <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">{{ doctor.lastname }} {{ doctor.firstname }}</option>
         </select>
-
         <select v-model="selectedService" required>
           <option value="" disabled>Выберите услугу</option>
           <option v-for="service in services" :key="service.id" :value="service.id">{{ service.name }}</option>
         </select>
-
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-
         <button type="submit">Записаться</button>
       </form>
     </div>
-
     <section class="my-records-section">
       <div class="my-record-card-container" v-for="record in records" :key="record.id">
         <div class="my-record-card">
@@ -69,7 +63,6 @@ const selectedDoctor = ref('');
 const selectedService = ref('');
 const appointmentDate = ref('');
 const errorMessage = ref('');
-
 const minDateTime = new Date().toISOString().slice(0, 16);
 
 onMounted(() => {
@@ -86,7 +79,6 @@ onMounted(() => {
   fetchServices();
   fetchRecords();
 });
-
 const fetchPets = () => {
   const petRef = dbRef(db, 'Pets');
   onValue(petRef, (snapshot) => {
@@ -94,7 +86,6 @@ const fetchPets = () => {
     pets.value = petsData ? Object.keys(petsData).map(key => ({ id: key, ...petsData[key] })).filter(pet => pet.userId === userId) : [];
   });
 };
-
 const fetchDoctors = () => {
   const doctorRef = dbRef(db, 'Doctors');
   onValue(doctorRef, (snapshot) => {
@@ -102,7 +93,6 @@ const fetchDoctors = () => {
     doctors.value = doctorsData ? Object.keys(doctorsData).map(key => ({ id: key, ...doctorsData[key] })) : [];
   });
 };
-
 const fetchServices = () => {
   const serviceRef = dbRef(db, 'Services');
   onValue(serviceRef, (snapshot) => {
@@ -110,7 +100,6 @@ const fetchServices = () => {
     services.value = servicesData ? Object.keys(servicesData).map(key => ({ id: key, ...servicesData[key] })) : [];
   });
 };
-
 const fetchRecords = () => {
   const recordRef = dbRef(db, 'Records');
   onValue(recordRef, (snapshot) => {
@@ -118,7 +107,6 @@ const fetchRecords = () => {
     records.value = recordsData ? Object.keys(recordsData).map(key => ({ id: key, ...recordsData[key] })) : [];
   });
 };
-
 const isTimeSlotAvailable = (timestamp) => {
   return !records.value.some(record => new Date(record.timestamp).toISOString() === new Date(timestamp).toISOString());
 };

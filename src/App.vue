@@ -16,9 +16,7 @@
         <a v-if="isAuthenticated" @click="logout">Выход</a>
       </div>
     </header>
-
     <router-view/>
-
     <footer>
       <div class="footer-navbar">
         <div class="footer-column">

@@ -4,7 +4,7 @@
       <div class="profile-info">
         <img class="profile-image" src="../../public/img/profile-icon.png" alt="Profile Icon">
         <div class="profile-name">
-          <h3>{{ userFullName }}</h3> <!-- Добавляем отображение полного имени -->
+          <h3>{{ userFullName }}</h3>
         </div>
       </div>
       <nav class="profile-nav">
@@ -35,7 +35,6 @@ import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const auth = getAuth();
 const db = getFirestore();
-
 const login = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -45,9 +44,6 @@ const patronymic = ref('');
 const phone = ref('');
 const errorMessage = ref('');
 const userFullName = ref('');
-
-
-
 const fetchUserData = async () => {
   const user = auth.currentUser;
   if (user) {
@@ -77,7 +73,6 @@ const updateUser = async () => {
       errorMessage.value = 'Пароли не совпадают';
       return;
     }
-
     try {
       if (login.value !== user.email) {
         await updateEmail(user, login.value);

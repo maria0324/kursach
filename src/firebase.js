@@ -12,7 +12,6 @@ const firebaseConfig = {
     appId: "1:1080872217369:web:bba4407269cffd65dc3388"
 };
 
-// Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app); // получаем ссылку на хранилище
